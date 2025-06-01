@@ -163,10 +163,10 @@ class GeoBot:
 
     def select_map_location(self, x: int, y: int, plot: bool = False) -> None:
         # Hovering over the minimap to expand it
-        # pyautogui.moveTo(self.map_x+self.map_w-15, self.map_y+self.map_h-15, duration=0.5)
+        pyautogui.moveTo(self.map_x+self.map_w-15, self.map_y+self.map_h-15, duration=0.5)
         #bot.screen_w-50, bot.screen_h-80
-        pyautogui.moveTo(self.screen_w-50, self.screen_h-80, duration=1.5)
-        print(self.screen_w-50, self.screen_h-80)
+        # pyautogui.moveTo(self.screen_w-50, self.screen_h-80, duration=1.5)
+        # print(self.screen_w-50, self.screen_h-80)
         print('finish moving')
         sleep(1.5)
 
