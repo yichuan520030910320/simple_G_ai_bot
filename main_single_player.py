@@ -30,6 +30,7 @@ def play_turn(bot: GeoBot, plot: bool = False):
         bot.select_map_location(*location, plot=plot)
     else:
         print("Error getting a location for second time")
+        # TODO: strange default location, may neeed to change
         bot.select_map_location(x=1, y=1, plot=plot)
 
     # Going to the next round
