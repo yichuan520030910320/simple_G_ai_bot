@@ -37,7 +37,22 @@ def play_turn(bot: GeoBot, plot: bool = False):
     pyautogui.press(" ")
     sleep(2)
 
+def play_turn_with_mapcrunch(bot: GeoBot, plot: bool = False):
+    # TODO finish here
+    multiturn = True
+    # read one line form file : map_chrunch.txt
 
+    # open the url and do javascript stuff to hide off street name
+
+    # screen shot the map and get answer
+
+    if multiturn:
+        # we can play computer use agent by click the arrow in the env
+        pass
+
+    # compare to the golden label in url
+
+    sleep(1)
 def main(turns=5, plot=False):
     if "screen_regions.yaml" not in os.listdir():
         screen_regions = get_coords(players=1)
