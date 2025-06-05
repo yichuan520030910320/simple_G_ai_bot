@@ -168,7 +168,7 @@ class GeoBot:
         # pyautogui.moveTo(self.screen_w-50, self.screen_h-80, duration=1.5)
         # print(self.screen_w-50, self.screen_h-80)
         print('finish moving')
-        sleep(1.5)
+        sleep(0.5)
 
         # Clicking on the predicted location
         pyautogui.click(x, y, duration=0.5)
