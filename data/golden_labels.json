@@ -1,0 +1,1260 @@
+{
+  "metadata": {
+    "collection_date": "2025-06-06T00:26:30.995260",
+    "total_samples": 50,
+    "version": "2.0",
+    "description": "MapCrunch location identifiers and coordinates for benchmark testing"
+  },
+  "samples": [
+    {
+      "id": "5f7c5923-c2a0-47d8-9a77-ea6f3a2fc3b9",
+      "timestamp": "2025-06-06T00:22:55.968506",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "01bc2a1d-68d5-4016-a13e-35b66b2cb756",
+      "timestamp": "2025-06-06T00:23:00.351960",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "220825af-deb9-49ec-b835-e1d8f0bb7f12",
+      "timestamp": "2025-06-06T00:23:04.755965",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "ef551d4d-15b5-47aa-b3e2-e13846406074",
+      "timestamp": "2025-06-06T00:23:09.115234",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "2f6669d9-6c8c-4c19-8437-e2c8d6fd4319",
+      "timestamp": "2025-06-06T00:23:13.480240",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "46c5f3e8-017b-43c6-b92a-3d8619572c50",
+      "timestamp": "2025-06-06T00:23:17.848710",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "8bf4efa4-3211-4c12-9653-175539acc184",
+      "timestamp": "2025-06-06T00:23:22.210621",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "be7fb9d3-de59-4054-8393-21e860a96d6d",
+      "timestamp": "2025-06-06T00:23:26.583507",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "01515cb0-471d-4471-be9e-a9e79ca78ab2",
+      "timestamp": "2025-06-06T00:23:30.945853",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "04b53284-b75d-44dd-8ed5-dbd31031b06f",
+      "timestamp": "2025-06-06T00:23:35.314812",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "6662857b-cb16-4639-93ef-7b05ce9235e4",
+      "timestamp": "2025-06-06T00:23:39.664978",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "976dfba7-e232-4d10-89d0-fd762bc9583b",
+      "timestamp": "2025-06-06T00:23:44.024063",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "916f7f19-f9e2-4c8a-aa8d-23fa112ef31d",
+      "timestamp": "2025-06-06T00:23:48.396752",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "c32c2529-8765-4ce9-9f2c-4fd864fc6036",
+      "timestamp": "2025-06-06T00:23:52.792250",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "ee892cc9-33ba-4bd1-af9c-f1b59124ca5b",
+      "timestamp": "2025-06-06T00:23:57.148095",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "60f846fa-a95d-4308-acba-c3402f5d4af0",
+      "timestamp": "2025-06-06T00:24:01.523545",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "e87dedb1-605d-4bef-9a03-90aaf57d5e01",
+      "timestamp": "2025-06-06T00:24:05.892623",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "75fac12e-7135-4231-8d27-4bf6b092f37d",
+      "timestamp": "2025-06-06T00:24:10.309840",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "fcb1683a-b246-4f0f-a2b4-0b297512a9dd",
+      "timestamp": "2025-06-06T00:24:14.679000",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "8023f1cf-6bc4-42fb-a548-afb83e1d2c16",
+      "timestamp": "2025-06-06T00:24:19.045133",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "935e899c-ae68-4fc6-b481-9966e2867ef2",
+      "timestamp": "2025-06-06T00:24:23.430605",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "8ce57055-ce50-49da-87c4-d6d23956c6f6",
+      "timestamp": "2025-06-06T00:24:27.812257",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "e8958a01-6ba3-4dea-bfc7-bedb1d01b2ab",
+      "timestamp": "2025-06-06T00:24:32.174293",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "95cce031-116a-4c8b-89c2-3699c46e218f",
+      "timestamp": "2025-06-06T00:24:36.542909",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "d7f02d87-0794-479d-909e-1992f2969d7f",
+      "timestamp": "2025-06-06T00:24:40.946344",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "f6ee7205-25b8-4e39-adbc-fb4ca1be6838",
+      "timestamp": "2025-06-06T00:24:45.488870",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "cb71ad17-649a-4267-aa19-440705d500c5",
+      "timestamp": "2025-06-06T00:24:49.868165",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "3d289b3b-7d4c-46dc-b9d6-3f86513dd44f",
+      "timestamp": "2025-06-06T00:24:54.235223",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "869e7179-2b8d-4979-ba81-203fcca34d14",
+      "timestamp": "2025-06-06T00:24:58.591889",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "3fb5e635-21ee-4ade-8552-4f997bb5631b",
+      "timestamp": "2025-06-06T00:25:03.000067",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "e4c6024b-4332-4451-9a20-7057053f9c19",
+      "timestamp": "2025-06-06T00:25:07.365832",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "e803b63f-4d61-4660-af96-7e18c2b79d31",
+      "timestamp": "2025-06-06T00:25:11.716283",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "430b61b3-e3b4-4bcb-ad59-db6d7ecb492c",
+      "timestamp": "2025-06-06T00:25:16.076779",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "8131f04a-956e-4013-8fce-1351c053f007",
+      "timestamp": "2025-06-06T00:25:20.661570",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "bdaaa0f8-b209-4b5f-90c7-97598e51a9cd",
+      "timestamp": "2025-06-06T00:25:25.019660",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "4dc147b2-6682-487e-b5d5-5e856c44bc2e",
+      "timestamp": "2025-06-06T00:25:29.417355",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "f3caa7a4-0f08-4be1-87a0-bba1e97dbf8f",
+      "timestamp": "2025-06-06T00:25:33.789081",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "7cc00ca5-be9c-4264-a346-b1f705056938",
+      "timestamp": "2025-06-06T00:25:38.171172",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "341c22c6-2327-444a-b12a-9d41fa3d9d9c",
+      "timestamp": "2025-06-06T00:25:42.559072",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "b169631f-14d5-47e7-82d3-49ffdee22a62",
+      "timestamp": "2025-06-06T00:25:46.939217",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "c393330d-0a38-4ea4-b8f1-2b2639096035",
+      "timestamp": "2025-06-06T00:25:51.363584",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "022c5527-018c-4f20-9245-117dc7cb8da1",
+      "timestamp": "2025-06-06T00:25:55.732324",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "4130aab0-1c5b-4874-83d3-5b35dd5a1468",
+      "timestamp": "2025-06-06T00:26:00.103200",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "8f7b894a-0fef-4fe1-ad8b-b59ed3a68d7d",
+      "timestamp": "2025-06-06T00:26:04.495081",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "1523c77f-e328-4cdc-a661-02779cc2dc54",
+      "timestamp": "2025-06-06T00:26:08.857207",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "51b202aa-bef0-438e-a309-7b6680275429",
+      "timestamp": "2025-06-06T00:26:13.221837",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "a3c94ef5-baf6-4780-bb8a-4b432720e9be",
+      "timestamp": "2025-06-06T00:26:17.575845",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "48cd5a5d-2ab1-4806-bde4-b054a9b7abd5",
+      "timestamp": "2025-06-06T00:26:21.957839",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "d66c74a8-0f31-48ed-8267-5e09115cfce6",
+      "timestamp": "2025-06-06T00:26:26.310156",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    },
+    {
+      "id": "a4ba3e79-f8f4-454d-a611-566b46edd783",
+      "timestamp": "2025-06-06T00:26:30.675798",
+      "coordinates": {
+        "address": "Inuvik Region, Northwest Territories, Canada",
+        "lat": 69.334724,
+        "lng": -122.896311,
+        "source": "mapcrunch_initString"
+      },
+      "lat": 69.334724,
+      "lng": -122.896311,
+      "address": "Inuvik Region, Northwest Territories, Canada",
+      "source": "mapcrunch_initString",
+      "identifiers": {
+        "initPanoId": "9wDN3WqJXUQudg-HhZu3ww",
+        "initString": "69.334724_-122.896311_129.82_4.2_-1",
+        "locationString": "Inuvik Region, Northwest Territories, Canada",
+        "permLink": "http://www.mapcrunch.com/s/1413853_5ffcdb14",
+        "url": "https://www.mapcrunch.com/"
+      },
+      "url": "https://www.mapcrunch.com/",
+      "init_string": "69.334724_-122.896311_129.82_4.2_-1",
+      "pano_id": "9wDN3WqJXUQudg-HhZu3ww",
+      "perm_link": "http://www.mapcrunch.com/s/1413853_5ffcdb14"
+    }
+  ]
+}
