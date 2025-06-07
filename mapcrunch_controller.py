@@ -120,16 +120,38 @@ class MapCrunchController:
             print(f"⚠️ Warning: Could not fully configure clean environment: {e}")
 
     def load_location_from_data(self, location_data: Dict) -> bool:
+        """
+        Loads a new location. PRIORITY: JS call. FALLBACK: URL navigation.
+        """
         try:
+            assert self.driver is not None
+            pano_id = location_data.get("pano_id")
+            pov = location_data.get("pov")
+
+            # 策略B：优先尝试通过JS直接设置场景，速度最快
+            if pano_id and pov:
+                print(f"✅ Loading location via JS Call: PanoID {pano_id[:10]}...")
+                self.driver.execute_script(
+                    "window.panorama.setPano(arguments[0]);"
+                    "window.panorama.setPov(arguments[1]);",
+                    pano_id,
+                    pov,
+                )
+                time.sleep(2)  # 等待新瓦片图加载
+                return True
+
+            # 策略A：如果数据不完整，回退到URL加载的方式
             url_slug = location_data.get("url_slug")
             if url_slug:
                 url_to_load = f"{MAPCRUNCH_URL}/p/{url_slug}"
-                print(f"✅ Loading location via precise URL Slug: {url_to_load}")
+                print(f"⚠️ JS load failed, falling back to URL Slug: {url_to_load}")
                 self.driver.get(url_to_load)
                 time.sleep(4)
                 return True
-            print("⚠️ No url_slug found in location data. Cannot load precisely.")
+
+            print("❌ Cannot load location: No valid pano_id/pov or url_slug in data.")
             return False
+
         except Exception as e:
             print(f"❌ Error loading location: {e}")
             return False
