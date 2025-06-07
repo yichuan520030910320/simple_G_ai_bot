@@ -53,23 +53,27 @@ class MapCrunchController:
         """
         Forcefully enables stealth mode and hides UI elements for a clean benchmark environment.
         """
-        try:
-            # 1. 强制开启 Stealth 模式
-            # 这一步确保地址信息被网站自身的逻辑隐藏
-            stealth_checkbox = self.wait.until(
-                EC.presence_of_element_located(
-                    (By.CSS_SELECTOR, SELECTORS["stealth_checkbox"])
-                )
-            )
-            if not stealth_checkbox.is_selected():
-                # 使用JS点击更可靠，可以避免元素被遮挡的问题
-                self.driver.execute_script("arguments[0].click();", stealth_checkbox)
-                print("✅ Stealth mode programmatically enabled for benchmark.")
 
-            # 2. 用 JS 隐藏其他视觉干扰元素
-            # 这一步确保截图区域干净
+    def setup_clean_environment(self):
+        """
+        Forcefully enables FULL stealth mode by directly calling the site's own
+        JavaScript functions, ensuring a clean benchmark environment.
+        """
+        try:
+            assert self.driver is not None
+
+            # 1. 直接调用网站自己的 hideLoc() 函数，这是最核心和最可靠的方法
+            # 它会隐藏地址栏和图像内的街道标签
+            self.driver.execute_script(
+                "if(typeof hideLoc === 'function') { hideLoc(); }"
+            )
+            print(
+                "✅ Stealth mode (in-image labels hidden) forced via JS function call."
+            )
+
+            # 2. 额外隐藏其他我们不想要的UI元素，确保截图绝对干净
             self.driver.execute_script("""
-                const elementsToHide = ['#menu', '#info-box', '#social', '#bottom-box', '#topbar'];
+                const elementsToHide = ['#menu', '#social', '#bottom-box', '#topbar'];
                 elementsToHide.forEach(sel => {
                     const el = document.querySelector(sel);
                     if (el) el.style.display = 'none';
@@ -77,7 +81,7 @@ class MapCrunchController:
                 const panoBox = document.querySelector('#pano-box');
                 if (panoBox) panoBox.style.height = '100vh';
             """)
-            print("✅ Clean UI configured for benchmark.")
+            print("✅ UI elements hidden for clean screenshot.")
 
         except Exception as e:
             print(f"⚠️ Warning: Could not fully configure clean environment: {e}")

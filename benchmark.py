@@ -1,4 +1,4 @@
-# benchmark.py (Final Version)
+# benchmark.py (Final Corrected Logic)
 
 import os
 import json
@@ -18,6 +18,7 @@ class MapGuesserBenchmark:
         self.golden_labels = self.load_golden_labels()
         print(f"📊 Loaded {len(self.golden_labels)} golden label samples")
 
+    # ... load_golden_labels, get_model_class, calculate_distance 函数保持不变 ...
     def load_golden_labels(self) -> List[Dict]:
         try:
             with open(DATA_PATHS["golden_labels"], "r") as f:
@@ -47,29 +48,27 @@ class MapGuesserBenchmark:
     def calculate_distance(
         self, true_coords: Dict, predicted_coords: Optional[Tuple[float, float]]
     ) -> Optional[float]:
-        """Calculates distance between true (lat,lon) and predicted (lat,lon)."""
         if not predicted_coords:
             return None
         try:
             true_lat, true_lng = true_coords["lat"], true_coords["lng"]
             pred_lat, pred_lng = predicted_coords
-
             R = 6371
             lat1, lon1, lat2, lon2 = map(
                 math.radians, [true_lat, true_lng, pred_lat, pred_lng]
             )
-            dlat = lat2 - lat1
-            dlon = lon2 - lon1
             a = (
-                math.sin(dlat / 2) ** 2
-                + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+                math.sin((lat2 - lat1) / 2) ** 2
+                + math.cos(lat1)
+                * math.cos(lat2)
+                * math.sin((dlon := lon2 - lon1) / 2) ** 2
             )
             c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
             return R * c
-        except (TypeError, KeyError, IndexError) as e:
-            print(f"Error in distance calculation: {e}")
+        except Exception:
             return None
 
+    # **run_benchmark 保持不变，它只负责管理循环和浏览器生命周期**
     def run_benchmark(
         self,
         models: Optional[List[str]] = None,
@@ -114,7 +113,6 @@ class MapGuesserBenchmark:
                             print(f"   {status} (Distance: {dist_str})")
 
                         except KeyboardInterrupt:
-                            print("\n⏹️  Benchmark inner loop interrupted.")
                             raise
                         except Exception as e:
                             print(f"   ❌ Test failed with unhandled exception: {e}")
@@ -128,16 +126,20 @@ class MapGuesserBenchmark:
                             )
 
             except KeyboardInterrupt:
-                print("\n⏹️  Benchmark outer loop interrupted.")
+                print("\n⏹️  Benchmark outer loop interrupted by user.")
                 break
 
         self.save_results(all_results)
         return self.generate_summary(all_results)
 
+    # **修改**: run_single_test_with_bot 的内部逻辑顺序
     def run_single_test_with_bot(self, bot: GeoBot, location_data: Dict) -> Dict:
+        """Runs a test using an existing GeoBot instance with the correct logic order."""
         start_time = time.time()
 
         assert bot.controller is not None
+
+        # 步骤 1: 加载新地点 (这会刷新页面)
         if not bot.controller.load_location_from_data(location_data):
             return {
                 "success": False,
@@ -146,6 +148,10 @@ class MapGuesserBenchmark:
                 "sample_id": location_data["id"],
             }
 
+        # 步骤 2: **关键修复**: 在新页面加载完成后，重新设置干净的“隐身”环境
+        bot.controller.setup_clean_environment()
+
+        # 步骤 3: 现在，对这个干净的页面进行截图
         screenshot = bot.take_screenshot()
         if not screenshot:
             return {
@@ -155,7 +161,9 @@ class MapGuesserBenchmark:
                 "sample_id": location_data["id"],
             }
 
+        # 步骤 4: AI 分析
         predicted_lat_lon = bot.analyze_image(screenshot)
+
         inference_time = time.time() - start_time
 
         true_coords = location_data["coordinates"]
@@ -173,6 +181,7 @@ class MapGuesserBenchmark:
             "success": is_success,
         }
 
+    # ... save_results 和 generate_summary 函数保持不变 ...
     def save_results(self, results: List[Dict]):
         if not results:
             return
@@ -199,7 +208,6 @@ class MapGuesserBenchmark:
             if model not in by_model:
                 by_model[model] = []
             by_model[model].append(r)
-
         for model, model_results in by_model.items():
             successful_runs = [r for r in model_results if r.get("success")]
             distances = [
@@ -207,10 +215,8 @@ class MapGuesserBenchmark:
                 for r in model_results
                 if r.get("distance_km") is not None
             ]
-
             if not model_results:
                 continue
-
             summary[model] = {
                 "success_rate": len(successful_runs) / len(model_results)
                 if model_results
