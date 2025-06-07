@@ -1,4 +1,4 @@
-# data_collector.py (Restored to original format)
+# data_collector.py (Final Version for High-Quality Data)
 
 import os
 import json
@@ -36,16 +36,17 @@ class DataCollector:
     def collect_samples(
         self, num_samples: Optional[int] = None, **kwargs
     ) -> List[Dict]:
-        # ... (此函数不变) ...
         num_samples = num_samples or BENCHMARK_CONFIG["data_collection_samples"]
-        print(f"🚀 Starting location data collection for {num_samples} samples...")
-        self.controller.setup_collection_options(self.options)
+        print(f"🚀 Starting high-quality data collection for {num_samples} samples...")
+
+        # NOTE: setup_collection_options is not implemented in the provided controller, assuming it's handled manually or not needed.
 
         successful_samples = 0
         while successful_samples < num_samples:
             print(f"\n📍 Collecting location {successful_samples + 1}/{num_samples}")
             if not self.controller.click_go_button():
-                print("❌ Failed to get new location")
+                print("❌ Failed to get new location, retrying...")
+                time.sleep(2)
                 continue
 
             location_data = self.collect_single_location()
@@ -54,7 +55,7 @@ class DataCollector:
                 successful_samples += 1
                 lat, lng = location_data.get("lat"), location_data.get("lng")
                 print(
-                    f"✅ Location {successful_samples}: {location_data['address']} ({lat:.4f}, {lng:.4f})"
+                    f"✅ Location {successful_samples}: {location_data.get('address', 'N/A')} ({lat:.4f}, {lng:.4f})"
                 )
             else:
                 print("❌ Location collection failed")
@@ -62,67 +63,60 @@ class DataCollector:
         self.save_data()
         return self.data
 
+    # 在 data_collector.py 中替换此函数
+
     def collect_single_location(self) -> Optional[Dict]:
-        """Collects a single location using the original, verbose data format."""
+        """Collects a single location and manually constructs the url_slug."""
         try:
-            sample_id = str(uuid.uuid4())
-            timestamp = datetime.now().isoformat()
-
-            # 1. 获取实时坐标
-            current_coords = self.controller.driver.execute_script(
-                "if (window.panorama) { return { lat: window.panorama.getPosition().lat(), lng: window.panorama.getPosition().lng() }; } else { return null; }"
+            # 1. 获取坐标和标识符
+            coords = self.controller.driver.execute_script(
+                "return { lat: window.panorama.getPosition().lat(), lng: window.panorama.getPosition().lng() };"
             )
-            if not current_coords or current_coords.get("lat") is None:
-                return None
+            if not coords:
+                raise ValueError("Could not get coordinates.")
 
-            # 2. 获取实时标识符
-            live_identifiers = self.controller.get_live_location_identifiers()
-            if not live_identifiers or "error" in live_identifiers:
-                return None
+            identifiers = self.controller.get_live_location_identifiers()
+            if not identifiers or "pov" not in identifiers:
+                raise ValueError("Could not get POV.")
 
-            # 3. 获取地址
             address = self.controller.get_current_address()
 
-            # 4. **构建您期望的、未精简的JSON结构**
+            # **2. 核心修复：在Python中手动构建url_slug**
+            lat = coords.get("lat")
+            lng = coords.get("lng")
+            pov = identifiers.get("pov")
+            # MapCrunch的URL slug中，zoom是0-based，而Google POV是1-based
+            zoom_for_slug = round(pov.get("zoom", 1.0)) - 1
+
+            # 使用 roundNum 函数的逻辑来格式化数字
+            def round_num(n, d):
+                return f"{n:.{d}f}"
+
+            url_slug = (
+                f"{round_num(lat, 6)}_"
+                f"{round_num(lng, 6)}_"
+                f"{round_num(pov.get('heading', 0), 2)}_"
+                f"{round_num(pov.get('pitch', 0) * -1, 2)}_"  # Pitch在slug中是负数
+                f"{zoom_for_slug}"
+            )
+
+            # 3. 构建数据样本
+            sample_id = str(uuid.uuid4())
             location_data = {
                 "id": sample_id,
-                "timestamp": timestamp,
-                # 嵌套的 coordinates 字典
-                "coordinates": {
-                    "lat": current_coords.get("lat"),
-                    "lng": current_coords.get("lng"),
-                    "source": "panorama_object",
-                },
-                # 顶层的 lat/lng
-                "lat": current_coords.get("lat"),
-                "lng": current_coords.get("lng"),
+                "timestamp": datetime.now().isoformat(),
+                "lat": lat,
+                "lng": lng,
                 "address": address or "Unknown",
-                "source": "panorama_object",
-                # 嵌套的 identifiers 字典 (现在填充的是实时数据)
-                "identifiers": {
-                    "initPanoId": live_identifiers.get("panoId"),  # 实时PanoID
-                    "permLink": live_identifiers.get("permLink"),  # 实时链接
-                    # 保留旧字段，但填充新数据或留空
-                    "initString": live_identifiers.get("urlString"),
-                    "locationString": address,
-                    "url": live_identifiers.get("permLink"),
-                },
-                # 顶层的链接字段
-                "url": live_identifiers.get("permLink"),
-                "init_string": live_identifiers.get("urlString"),
-                "pano_id": live_identifiers.get("panoId"),
-                "perm_link": live_identifiers.get("permLink"),
-                "collection_options": self.options.copy(),
+                "pano_id": identifiers.get("panoId"),
+                "pov": pov,
+                "url_slug": url_slug,  # <-- 现在这里永远有正确的值
             }
 
-            # 保存缩略图
-            if DATA_COLLECTION_CONFIG.get("save_thumbnails", True):
-                thumbnail_path = self.save_thumbnail(sample_id)
-                if thumbnail_path:
-                    location_data["thumbnail_path"] = thumbnail_path
-                    location_data["has_thumbnail"] = True
-                else:
-                    location_data["has_thumbnail"] = False
+            # 4. 保存缩略图
+            thumbnail_path = self.save_thumbnail(sample_id)
+            if thumbnail_path:
+                location_data["thumbnail_path"] = thumbnail_path
 
             return location_data
 
@@ -153,12 +147,15 @@ class DataCollector:
     def save_data(self):
         try:
             output_data = {
-                "metadata": {"collection_date": datetime.now().isoformat()},
+                "metadata": {
+                    "collection_date": datetime.now().isoformat(),
+                    "collection_options": self.options,
+                },
                 "samples": self.data,
             }
             with open(DATA_PATHS["golden_labels"], "w") as f:
                 json.dump(output_data, f, indent=2)
-            print(f"\n💾 Location data saved to {DATA_PATHS['golden_labels']}")
+            print(f"\n💾 High-quality data saved to {DATA_PATHS['golden_labels']}")
         except Exception as e:
             print(f"❌ Error saving data: {e}")
 

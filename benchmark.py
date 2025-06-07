@@ -1,4 +1,4 @@
-# benchmark.py (Final Corrected Logic)
+# benchmark.py (Final Fix)
 
 import os
 import json
@@ -18,7 +18,6 @@ class MapGuesserBenchmark:
         self.golden_labels = self.load_golden_labels()
         print(f"📊 Loaded {len(self.golden_labels)} golden label samples")
 
-    # ... load_golden_labels, get_model_class, calculate_distance 函数保持不变 ...
     def load_golden_labels(self) -> List[Dict]:
         try:
             with open(DATA_PATHS["golden_labels"], "r") as f:
@@ -48,7 +47,7 @@ class MapGuesserBenchmark:
     def calculate_distance(
         self, true_coords: Dict, predicted_coords: Optional[Tuple[float, float]]
     ) -> Optional[float]:
-        if not predicted_coords:
+        if not predicted_coords or "lat" not in true_coords or "lng" not in true_coords:
             return None
         try:
             true_lat, true_lng = true_coords["lat"], true_coords["lng"]
@@ -58,7 +57,7 @@ class MapGuesserBenchmark:
                 math.radians, [true_lat, true_lng, pred_lat, pred_lng]
             )
             a = (
-                math.sin((lat2 - lat1) / 2) ** 2
+                math.sin((dlat := lat2 - lat1) / 2) ** 2
                 + math.cos(lat1)
                 * math.cos(lat2)
                 * math.sin((dlon := lon2 - lon1) / 2) ** 2
@@ -68,7 +67,6 @@ class MapGuesserBenchmark:
         except Exception:
             return None
 
-    # **run_benchmark 保持不变，它只负责管理循环和浏览器生命周期**
     def run_benchmark(
         self,
         models: Optional[List[str]] = None,
@@ -79,7 +77,13 @@ class MapGuesserBenchmark:
             raise ValueError("No golden labels available.")
 
         models_to_test = models or list(MODELS_CONFIG.keys())
-        test_samples = self.golden_labels[:max_samples]
+        # 使用 max_samples 限制测试样本数量
+        num_to_test = (
+            min(max_samples, len(self.golden_labels))
+            if max_samples is not None
+            else len(self.golden_labels)
+        )
+        test_samples = self.golden_labels[:num_to_test]
 
         print(f"🚀 Starting LIVE benchmark:")
         print(f"   Models: {models_to_test}")
@@ -132,14 +136,10 @@ class MapGuesserBenchmark:
         self.save_results(all_results)
         return self.generate_summary(all_results)
 
-    # **修改**: run_single_test_with_bot 的内部逻辑顺序
     def run_single_test_with_bot(self, bot: GeoBot, location_data: Dict) -> Dict:
-        """Runs a test using an existing GeoBot instance with the correct logic order."""
         start_time = time.time()
 
         assert bot.controller is not None
-
-        # 步骤 1: 加载新地点 (这会刷新页面)
         if not bot.controller.load_location_from_data(location_data):
             return {
                 "success": False,
@@ -148,10 +148,8 @@ class MapGuesserBenchmark:
                 "sample_id": location_data["id"],
             }
 
-        # 步骤 2: **关键修复**: 在新页面加载完成后，重新设置干净的“隐身”环境
         bot.controller.setup_clean_environment()
 
-        # 步骤 3: 现在，对这个干净的页面进行截图
         screenshot = bot.take_screenshot()
         if not screenshot:
             return {
@@ -161,12 +159,12 @@ class MapGuesserBenchmark:
                 "sample_id": location_data["id"],
             }
 
-        # 步骤 4: AI 分析
         predicted_lat_lon = bot.analyze_image(screenshot)
-
         inference_time = time.time() - start_time
 
-        true_coords = location_data["coordinates"]
+        # **核心修复**: 从顶级的 "lat" 和 "lng" 键构造真实坐标字典
+        true_coords = {"lat": location_data.get("lat"), "lng": location_data.get("lng")}
+
         distance_km = self.calculate_distance(true_coords, predicted_lat_lon)
 
         is_success = distance_km is not None and distance_km <= SUCCESS_THRESHOLD_KM
@@ -181,8 +179,8 @@ class MapGuesserBenchmark:
             "success": is_success,
         }
 
-    # ... save_results 和 generate_summary 函数保持不变 ...
     def save_results(self, results: List[Dict]):
+        # ... (此函数不变) ...
         if not results:
             return
         try:
@@ -201,6 +199,7 @@ class MapGuesserBenchmark:
             print(f"❌ Error saving results: {e}")
 
     def generate_summary(self, results: List[Dict]) -> Dict:
+        # ... (此函数不变) ...
         summary = {}
         by_model = {}
         for r in results:
