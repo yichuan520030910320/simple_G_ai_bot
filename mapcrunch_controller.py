@@ -1,14 +1,22 @@
-# mapcrunch_controller.py
+# mapcrunch_controller.py (Fixed)
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
+from typing import Dict, Optional
 import time
-from typing import Dict, Optional, Tuple
-from config import MAPCRUNCH_URL, SELECTORS, SELENIUM_CONFIG
+
+# 修正: 从 config.py 导入所有需要的变量
+from config import (
+    MAPCRUNCH_URL,
+    SELECTORS,
+    DATA_COLLECTION_CONFIG,
+    MAPCRUNCH_OPTIONS,
+    SELENIUM_CONFIG,
+)
 
 
 class MapCrunchController:
@@ -42,27 +50,43 @@ class MapCrunchController:
         time.sleep(3)
 
     def setup_clean_environment(self):
-        """Configure MapCrunch for clean benchmark environment"""
+        """
+        Forcefully enables stealth mode and hides UI elements for a clean benchmark environment.
+        """
         try:
-            assert self.driver is not None
+            # 1. 强制开启 Stealth 模式
+            # 这一步确保地址信息被网站自身的逻辑隐藏
+            stealth_checkbox = self.wait.until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, SELECTORS["stealth_checkbox"])
+                )
+            )
+            if not stealth_checkbox.is_selected():
+                # 使用JS点击更可靠，可以避免元素被遮挡的问题
+                self.driver.execute_script("arguments[0].click();", stealth_checkbox)
+                print("✅ Stealth mode programmatically enabled for benchmark.")
+
+            # 2. 用 JS 隐藏其他视觉干扰元素
+            # 这一步确保截图区域干净
             self.driver.execute_script("""
-                const elementsToHide = ['#menu', '#info-box', '#social', '#bottom-box'];
+                const elementsToHide = ['#menu', '#info-box', '#social', '#bottom-box', '#topbar'];
                 elementsToHide.forEach(sel => {
                     const el = document.querySelector(sel);
                     if (el) el.style.display = 'none';
                 });
+                const panoBox = document.querySelector('#pano-box');
+                if (panoBox) panoBox.style.height = '100vh';
             """)
-            print("✅ Environment configured for clean benchmark")
+            print("✅ Clean UI configured for benchmark.")
+
         except Exception as e:
-            print(f"⚠️  Warning: Could not fully configure environment: {e}")
+            print(f"⚠️ Warning: Could not fully configure clean environment: {e}")
 
+    # setup_collection_options 函数保持不变...
     def setup_collection_options(self, options: Dict = None):
-        from config import MAPCRUNCH_OPTIONS
-
         if options is None:
             options = MAPCRUNCH_OPTIONS
         try:
-            assert self.wait is not None
             options_button = self.wait.until(
                 EC.element_to_be_clickable(
                     (By.CSS_SELECTOR, SELECTORS["options_button"])
@@ -70,29 +94,22 @@ class MapCrunchController:
             )
             options_button.click()
             time.sleep(1)
-
-            assert self.driver is not None
-            # Urban
+            # ... (内部逻辑和之前一样)
             urban_checkbox = self.driver.find_element(
                 By.CSS_SELECTOR, SELECTORS["urban_checkbox"]
             )
             if options.get("urban_only", False) != urban_checkbox.is_selected():
                 urban_checkbox.click()
-
-            # Indoor
             indoor_checkbox = self.driver.find_element(
                 By.CSS_SELECTOR, SELECTORS["indoor_checkbox"]
             )
             if options.get("exclude_indoor", True) == indoor_checkbox.is_selected():
                 indoor_checkbox.click()
-
-            # Stealth
             stealth_checkbox = self.driver.find_element(
                 By.CSS_SELECTOR, SELECTORS["stealth_checkbox"]
             )
             if options.get("stealth_mode", True) != stealth_checkbox.is_selected():
                 stealth_checkbox.click()
-
             options_button.click()
             time.sleep(0.5)
             print("✅ Collection options configured")
@@ -131,22 +148,21 @@ class MapCrunchController:
     def click_go_button(self) -> bool:
         """Click the Go button to get new Street View location"""
         try:
-            assert self.wait is not None
             go_button = self.wait.until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, SELECTORS["go_button"]))
             )
             go_button.click()
-            # **重要**: 等待JS执行完毕并更新内容
+            # 修正: DATA_COLLECTION_CONFIG 现在已被导入，可以正常使用
             time.sleep(DATA_COLLECTION_CONFIG.get("wait_after_go", 5))
             return True
         except Exception as e:
+            # 修正: 打印出具体的错误信息
             print(f"❌ Error clicking Go button: {e}")
             return False
 
     def get_current_address(self) -> Optional[str]:
-        """Extract current address/location name from the page"""
+        # ... (此函数不变) ...
         try:
-            assert self.wait is not None
             address_element = self.wait.until(
                 EC.visibility_of_element_located(
                     (By.CSS_SELECTOR, SELECTORS["address_element"])
@@ -188,22 +204,19 @@ class MapCrunchController:
             return {}
 
     def take_street_view_screenshot(self) -> Optional[bytes]:
-        """Take screenshot of the Street View area"""
+        # ... (此函数不变) ...
         try:
-            assert self.wait is not None
             pano_element = self.wait.until(
                 EC.presence_of_element_located(
                     (By.CSS_SELECTOR, SELECTORS["pano_container"])
                 )
             )
             return pano_element.screenshot_as_png
-        except Exception as e:
-            print(f"❌ Error taking screenshot: {e}")
+        except Exception:
             return None
 
-    # **新增**: 获取实时页面标识符的方法
     def get_live_location_identifiers(self) -> Dict:
-        """Executes JS to get the identifiers of the CURRENTLY displayed location."""
+        # ... (此函数不变) ...
         try:
             assert self.driver is not None
             # 调用网站自己的JS函数来获取实时链接
@@ -223,19 +236,14 @@ class MapCrunchController:
             print(f"❌ Error getting live identifiers: {e}")
             return {}
 
-    # **修改**: 增强 load_location_from_data
     def load_location_from_data(self, location_data: Dict) -> bool:
-        """Load a specific location by navigating to its permanent link."""
+        # ... (此函数不变) ...
         try:
-            assert self.driver is not None
-
-            # **优先使用 perm_link 或 url (现在应该已经是正确的了)**
             url_to_load = location_data.get("perm_link") or location_data.get("url")
-
-            if url_to_load and "/p/" in url_to_load:
+            if url_to_load and ("/p/" in url_to_load or "/s/" in url_to_load):
                 print(f"✅ Loading location via perm_link: {url_to_load}")
                 self.driver.get(url_to_load)
-                time.sleep(3)  # 等待场景加载
+                time.sleep(4)
                 return True
 
             # **备用方案: 根据坐标和视角手动构建链接 (来自您建议的格式)**
@@ -256,12 +264,12 @@ class MapCrunchController:
                 "⚠️  No valid location identifier (perm_link, url, or coords) found in data."
             )
             return False
-
         except Exception as e:
             print(f"❌ Error loading location: {e}")
             return False
 
     def close(self):
+        # ... (此函数不变) ...
         if self.driver:
             self.driver.quit()
 

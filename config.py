@@ -26,7 +26,7 @@ SELECTORS = {
 MAPCRUNCH_OPTIONS = {
     "urban_only": True,  # Show urban areas only
     "exclude_indoor": True,  # Exclude indoor views
-    "stealth_mode": True,  # Hide location info during gameplay
+    "stealth_mode": False,  # Hide location info during gameplay
     "tour_mode": False,  # 360 degree tour
     "auto_mode": False,  # Automatic slideshow
     "selected_countries": None,  # None means all, or list like ['us', 'gb', 'jp']
