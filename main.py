@@ -1,254 +1,173 @@
-#!/usr/bin/env python3
-"""
-Main entry point for MapCrunch geo-location testing
-
-Usage:
-    python main.py --mode data --samples 50 --urban --no-indoor   # Collect filtered data
-    python main.py --mode benchmark --models gpt-4o claude-3.5-sonnet  # Run benchmark
-    python main.py --mode interactive --model gpt-4o  # Interactive testing
-"""
-
 import argparse
-import os
-from time import sleep
-from typing import Dict
+import json
+import random
+from typing import Dict, Optional, List
 
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 from geo_bot import GeoBot
-from data_collector import DataCollector
 from benchmark import MapGuesserBenchmark
-from config import MODELS_CONFIG, SUCCESS_THRESHOLD_KM
+from config import MODELS_CONFIG, DATA_PATHS, SUCCESS_THRESHOLD_KM
 
 
-def interactive_mode(model_name: str = "gpt-4o", turns: int = 5, plot: bool = False):
-    """Interactive mode - play turns manually like the original"""
-    print(f"🎮 Starting interactive mode with {model_name}")
-
-    # Get model class
-    config = MODELS_CONFIG.get(model_name)
-    if not config:
-        print(f"❌ Unknown model: {model_name}")
-        return
-
-    model_class_name = config["class"]
-    model_class = globals()[model_class_name]
-    model_instance = config["model_name"]
-
-    # Create bot with Selenium integration
-    with GeoBot(model=model_class, model_name=model_instance, use_selenium=True) as bot:
-        # Setup clean environment
-        if bot.controller:
-            bot.controller.setup_clean_environment()
-
-        for turn in range(turns):
-            print(f"\n{'=' * 50}")
-            print(f"🎯 Turn {turn + 1}/{turns}")
-            print(f"{'=' * 50}")
-
-            try:
-                # Get new location (click Go button)
-                if bot.controller:
-                    if not bot.controller.click_go_button():
-                        print("❌ Failed to get new location")
-                        continue
-                else:
-                    print("⚠️  Manual mode: Please click Go button and press Enter")
-                    input()
-
-                # Take screenshot and analyze
-                screenshot = bot.take_screenshot()
-                location = bot.analyze_image(screenshot)
-
-                if location is not None:
-                    bot.select_map_location(*location, plot=plot)
-                    print("✅ Location selected successfully")
-                else:
-                    print("❌ Could not determine location")
-                    # Select a default location
-                    bot.select_map_location(
-                        x=bot.map_x + bot.map_w // 2,
-                        y=bot.map_y + bot.map_h // 2,
-                        plot=plot,
-                    )
-
-                # Brief pause between turns
-                sleep(2)
-
-            except KeyboardInterrupt:
-                print(f"\n⏹️  Game stopped by user after {turn + 1} turns")
-                break
-            except Exception as e:
-                print(f"❌ Error in turn {turn + 1}: {e}")
-                continue
-
-
-def data_collection_mode(
-    samples: int = 50, headless: bool = False, options: Dict = None
-):
-    """Data collection mode"""
-    print(f"📊 Starting data collection mode - {samples} samples")
-
-    if options:
-        print(f"🔧 Using custom options: {options}")
-
-    with DataCollector(headless=headless, options=options) as collector:
-        data = collector.collect_samples(samples)
-        print(f"✅ Collected {len(data)} samples successfully")
-
-
-def benchmark_mode(
-    models: list = None, samples: int = 10, live: bool = False, headless: bool = False
-):
-    """Benchmark mode"""
-    if models is None:
-        models = ["gpt-4o"]  # Default model
-
-    print(f"🏁 Starting benchmark mode")
-    print(f"   Models: {models}")
-    print(f"   Samples per model: {samples}")
-    print(f"   Mode: {'live' if live else 'offline'}")
-
-    benchmark = MapGuesserBenchmark(headless=headless)
+def agent_mode(model_name: str, steps: int, headless: bool, samples: int):
+    """
+    Runs the AI Agent in a benchmark loop over multiple samples,
+    using multi-step exploration for each.
+    """
+    print(
+        f"Starting Agent Mode (as a benchmark): model={model_name}, steps={steps}, samples={samples}"
+    )
 
     try:
-        summary = benchmark.run_benchmark(
-            models=models, max_samples=samples, use_live_mode=live
-        )
+        with open(DATA_PATHS["golden_labels"], "r", encoding="utf-8") as f:
+            golden_labels = json.load(f).get("samples", [])
+    except FileNotFoundError:
+        print(f"Error: Golden labels file not found at {DATA_PATHS['golden_labels']}.")
+        return
 
-        print(f"\n🎉 Benchmark Complete!")
+    if not golden_labels:
+        print("Error: No samples found in golden_labels.json.")
+        return
 
-        if summary:
-            print(f"\n📊 Results Summary:")
-            for model, stats in summary.items():
-                print(f"\n🤖 {model}:")
+    num_to_test = min(samples, len(golden_labels))
+    test_samples = golden_labels[:num_to_test]
+    print(f"Will run on {len(test_samples)} samples.")
+
+    config = MODELS_CONFIG.get(model_name)
+    model_class = globals()[config["class"]]
+    model_instance_name = config["model_name"]
+
+    benchmark_helper = MapGuesserBenchmark(headless=True)
+    all_results = []
+
+    with GeoBot(
+        model=model_class, model_name=model_instance_name, headless=headless
+    ) as bot:
+        for i, sample in enumerate(test_samples):
+            print(
+                f"\n--- Running Sample {i + 1}/{len(test_samples)} (ID: {sample.get('id')}) ---"
+            )
+
+            # **FIXED**: Correct sequence: Load Data -> Clean Environment -> Run Loop
+            if not bot.controller.load_location_from_data(sample):
                 print(
-                    f"   Success Rate (under {SUCCESS_THRESHOLD_KM}km): {stats.get('success_rate', 0) * 100:.1f}%"
+                    f"   ❌ Failed to load location for sample {sample.get('id')}. Skipping."
                 )
-                print(f"   📏 Average Distance: {stats['average_distance_km']:.1f} km")
-                print(f"   📊 Median Distance: {stats['median_distance_km']:.1f} km")
-                print(f"   🎯 Best: {stats['min_distance_km']:.1f} km")
-                print(f"   📈 Worst: {stats['max_distance_km']:.1f} km")
+                continue
 
-    except Exception as e:
-        print(f"❌ Benchmark failed: {e}")
+            bot.controller.setup_clean_environment()
+
+            final_guess = bot.run_agent_loop(max_steps=steps)
+
+            true_coords = {"lat": sample.get("lat"), "lng": sample.get("lng")}
+            distance_km = None
+            is_success = False
+
+            if final_guess:
+                distance_km = benchmark_helper.calculate_distance(
+                    true_coords, final_guess
+                )
+                if distance_km is not None:
+                    is_success = distance_km <= SUCCESS_THRESHOLD_KM
+
+                print(f"\nResult for Sample ID: {sample.get('id')}")
+                print(
+                    f"  Ground Truth: Lat={true_coords['lat']:.4f}, Lon={true_coords['lng']:.4f}"
+                )
+                print(
+                    f"  Final Guess:  Lat={final_guess[0]:.4f}, Lon={final_guess[1]:.4f}"
+                )
+                dist_str = f"{distance_km:.1f} km" if distance_km is not None else "N/A"
+                print(f"  Distance: {dist_str}, Success: {is_success}")
+            else:
+                print("Agent did not make a final guess for this sample.")
+
+            all_results.append(
+                {
+                    "sample_id": sample.get("id"),
+                    "model": bot.model_name,
+                    "true_coordinates": true_coords,
+                    "predicted_coordinates": final_guess,
+                    "distance_km": distance_km,
+                    "success": is_success,
+                }
+            )
+
+    summary = benchmark_helper.generate_summary(all_results)
+    if summary:
+        print("\n\n--- Agent Benchmark Complete! Summary ---")
+        for model, stats in summary.items():
+            print(f"Model: {model}")
+            print(f"  Success Rate: {stats['success_rate'] * 100:.1f}%")
+            print(f"  Avg Distance: {stats['average_distance_km']:.1f} km")
+
+    print("\nAgent Mode finished.")
+
+
+def benchmark_mode(models: list, samples: int, headless: bool):
+    """Runs the benchmark on pre-collected data."""
+    print(f"Starting Benchmark Mode: models={models}, samples={samples}")
+    benchmark = MapGuesserBenchmark(headless=headless)
+    summary = benchmark.run_benchmark(models=models, max_samples=samples)
+    if summary:
+        print("\n--- Benchmark Complete! Summary ---")
+        for model, stats in summary.items():
+            print(f"Model: {model}")
+            print(f"  Success Rate: {stats['success_rate'] * 100:.1f}%")
+            print(f"  Avg Distance: {stats['average_distance_km']:.1f} km")
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="MapCrunch Geo-Location AI Benchmark",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Collect training data with filters
-  python main.py --mode data --samples 100 --urban --no-indoor
-  
-  # Collect from specific countries
-  python main.py --mode data --samples 50 --countries us gb jp --urban
-  
-  # Run benchmark on saved data
-  python main.py --mode benchmark --models gpt-4o claude-3.5-sonnet --samples 20
-  
-  # Interactive testing  
-  python main.py --mode interactive --model gpt-4o --turns 5 --plot
-  
-  # Live benchmark (uses MapCrunch website directly)
-  python main.py --mode benchmark --live --models gpt-4o
-        """,
-    )
-
+    parser = argparse.ArgumentParser(description="MapCrunch AI Agent & Benchmark")
     parser.add_argument(
         "--mode",
-        choices=["interactive", "data", "benchmark"],
-        default="interactive",
-        help="Operation mode",
+        choices=["agent", "benchmark"],
+        default="agent",
+        help="Operation mode.",
     )
-
-    # Interactive mode options
     parser.add_argument(
         "--model",
         choices=list(MODELS_CONFIG.keys()),
         default="gpt-4o",
-        help="Model for interactive mode",
+        help="Model to use.",
     )
     parser.add_argument(
-        "--turns", type=int, default=5, help="Number of turns in interactive mode"
+        "--steps", type=int, default=10, help="[Agent] Number of exploration steps."
     )
     parser.add_argument(
-        "--plot", action="store_true", help="Generate plots of predictions"
-    )
-
-    # Data collection options
-    parser.add_argument(
-        "--samples", type=int, default=50, help="Number of samples to collect/test"
+        "--samples",
+        type=int,
+        default=50,
+        help="Number of samples to process for the selected mode.",
     )
     parser.add_argument(
-        "--urban", action="store_true", help="Collect only urban locations"
+        "--headless", action="store_true", help="Run browser in headless mode."
     )
-    parser.add_argument("--no-indoor", action="store_true", help="Exclude indoor views")
-    parser.add_argument(
-        "--countries",
-        nargs="+",
-        help="Specific countries to collect from (e.g., us gb jp)",
-    )
-
-    # Benchmark options
     parser.add_argument(
         "--models",
         nargs="+",
         choices=list(MODELS_CONFIG.keys()),
-        help="Models to benchmark",
-    )
-    parser.add_argument(
-        "--live", action="store_true", help="Use live MapCrunch website for benchmark"
-    )
-
-    # General options
-    parser.add_argument(
-        "--headless", action="store_true", help="Run browser in headless mode"
+        help="[Benchmark] Models to benchmark.",
     )
 
     args = parser.parse_args()
 
-    print(f"🚀 MapCrunch Geo-Location AI Benchmark")
-    print(f"   Mode: {args.mode}")
-
-    try:
-        if args.mode == "interactive":
-            interactive_mode(model_name=args.model, turns=args.turns, plot=args.plot)
-
-        elif args.mode == "data":
-            # Configure collection options from args
-            from config import MAPCRUNCH_OPTIONS
-
-            options = MAPCRUNCH_OPTIONS.copy()
-
-            if args.urban:
-                options["urban_only"] = True
-            if args.no_indoor:
-                options["exclude_indoor"] = True
-            if args.countries:
-                options["selected_countries"] = args.countries
-
-            data_collection_mode(
-                samples=args.samples, headless=args.headless, options=options
-            )
-
-        elif args.mode == "benchmark":
-            benchmark_mode(
-                models=args.models,
-                samples=args.samples,
-                live=args.live,
-                headless=args.headless,
-            )
-
-    except KeyboardInterrupt:
-        print(f"\n⏹️  Operation interrupted by user")
-    except Exception as e:
-        print(f"❌ Error: {e}")
-        raise
+    if args.mode == "agent":
+        agent_mode(
+            model_name=args.model,
+            steps=args.steps,
+            headless=args.headless,
+            samples=args.samples,
+        )
+    elif args.mode == "benchmark":
+        benchmark_mode(
+            models=args.models or [args.model],
+            samples=args.samples,
+            headless=args.headless,
+        )
 
 
 if __name__ == "__main__":
