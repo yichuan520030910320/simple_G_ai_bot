@@ -36,6 +36,91 @@ class MapCrunchController:
             if (infoFirstView) infoFirstView.style.display = 'none';
         """)
 
+    def label_arrows_on_screen(self):
+        """Overlays 'UP' and 'DOWN' labels on the navigation arrows."""
+        try:
+            pov = self.driver.execute_script("return window.panorama.getPov();")
+            links = self.driver.execute_script("return window.panorama.getLinks();")
+        except Exception:
+            return
+
+        if not links or not pov:
+            return
+
+        current_heading = pov["heading"]
+        forward_link = None
+        backward_link = None
+
+        # This logic is identical to your existing `move` function
+        # to ensure stylistic and behavioral consistency.
+        min_forward_diff = 360
+        for link in links:
+            diff = 180 - abs(abs(link["heading"] - current_heading) - 180)
+            if diff < min_forward_diff:
+                min_forward_diff = diff
+                forward_link = link
+
+        target_backward_heading = (current_heading + 180) % 360
+        min_backward_diff = 360
+        for link in links:
+            diff = 180 - abs(abs(link["heading"] - target_backward_heading) - 180)
+            if diff < min_backward_diff:
+                min_backward_diff = diff
+                backward_link = link
+
+        js_script = """
+            document.querySelectorAll('.geobot-arrow-label').forEach(el => el.remove());
+            document.querySelectorAll('path[data-geobot-modified]').forEach(arrow => {
+                arrow.setAttribute('transform', arrow.getAttribute('data-original-transform') || '');
+                arrow.removeAttribute('data-geobot-modified');
+                arrow.removeAttribute('data-original-transform');
+            });
+
+            const modifyAndLabelArrow = (panoId, labelText, color) => {
+                const arrowElement = document.querySelector(`path[pano="${panoId}"]`);
+                if (!arrowElement) return;
+
+                const originalTransform = arrowElement.getAttribute('transform') || '';
+                arrowElement.setAttribute('data-original-transform', originalTransform);
+                arrowElement.setAttribute('transform', `${originalTransform} scale(1.8)`);
+                arrowElement.setAttribute('data-geobot-modified', 'true');
+
+                const rect = arrowElement.getBoundingClientRect();
+                const label = document.createElement('div');
+                label.className = 'geobot-arrow-label';
+                label.style.position = 'fixed';
+                label.style.left = `${rect.left + rect.width / 2}px`;
+                label.style.top = `${rect.top - 45}px`;
+                label.style.transform = 'translateX(-50%)';
+                label.style.padding = '5px 15px';
+                label.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+                label.style.color = color;
+                label.style.borderRadius = '8px';
+                label.style.fontSize = '28px';
+                label.style.fontWeight = 'bold';
+                label.style.zIndex = '99999';
+                label.style.pointerEvents = 'none';
+                label.innerText = labelText;
+                document.body.appendChild(label);
+            };
+
+            const forwardPano = arguments[0];
+            const backwardPano = arguments[1];
+
+            if (forwardPano) {
+                modifyAndLabelArrow(forwardPano, 'UP', '#76FF03');
+            }
+            if (backwardPano && backwardPano !== forwardPano) {
+                modifyAndLabelArrow(backwardPano, 'DOWN', '#F44336');
+            }
+        """
+
+        forward_pano = forward_link["pano"] if forward_link else None
+        backward_pano = backward_link["pano"] if backward_link else None
+
+        self.driver.execute_script(js_script, forward_pano, backward_pano)
+        time.sleep(0.2)
+
     def get_available_actions(self) -> List[str]:
         """
         Checks for movement links via JavaScript.

@@ -12,6 +12,8 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 
 from mapcrunch_controller import MapCrunchController
 
+# The "Golden" Prompt (v6): Combines clear mechanics with robust strategic principles.
+
 AGENT_PROMPT_TEMPLATE = """
 **Mission:** You are an expert geo-location agent. Your goal is to find clues to determine your location within a limited number of steps.
 
@@ -22,16 +24,19 @@ AGENT_PROMPT_TEMPLATE = """
 ---
 **Core Principles of an Expert Player:**
 
-1.  **Final Step Rule:** If `remaining_steps` is **exactly 1**, this is your last action and it **MUST be `GUESS`**. Do not use your final step for exploration.
-2.  **Be Decisive:** If you find a key clue (a specific address, a unique landmark, or text identifying a city/region), make a `GUESS` immediately. Don't waste steps.
-3.  **Efficient Exploration:**
-    - At intersections or when the view is unpromising, **pan first** to see all directions before moving.
-    - If a path looks barren, don't get stuck moving forward. It's often smarter to turn around (using `PAN` or `MOVE_BACKWARD`).
-4.  **Understand Your Path (The Arrow Heuristic):** The navigation arrows on the ground show the two directions of the **road**. `MOVE_FORWARD` follows the arrow that appears **physically higher on your screen**. `MOVE_BACKWARD` follows the lower arrow. Use this to navigate predictably.
+1.  **Navigate with Labels:** `MOVE_FORWARD` follows the green 'UP' arrow. `MOVE_BACKWARD` follows the red 'DOWN' arrow. These labels are your most reliable compass. If there are no arrows, you cannot move.
+
+2.  **Efficient Exploration (to avoid "Bulldozer" mode):**
+    - **Pan Before You Move:** At a new location or an intersection, it's often wise to use `PAN_LEFT` or `PAN_RIGHT` to quickly survey your surroundings before committing to a move.
+    - **Don't Get Stuck:** If you've moved forward 2-3 times down a path and found nothing but repetitive scenery (like an empty forest or highway), consider it a barren path. It's smarter to turn around (using `PAN`) and check another direction.
+
+3.  **Be Decisive:** If you find a truly definitive clue (like a full, readable address or a sign with a unique town name), `GUESS` immediately. Don't waste steps.
+
+4.  **Final Step Rule:** If `remaining_steps` is **exactly 1**, your action **MUST be `GUESS`**.
 
 ---
 **Context & Task:**
-You will receive a sequence of images from your journey. The last image is your **CURRENT** view. Analyze the full history and your current view, apply the Core Principles, and decide your next action.
+Analyze your full journey history and current view, apply the Core Principles, and decide your next action in the required JSON format.
 
 **Action History:**
 {history_text}
@@ -132,6 +137,8 @@ class GeoBot:
             print(f"\n--- Step {max_steps - step + 1}/{max_steps} ---")
 
             self.controller.setup_clean_environment()
+
+            self.controller.label_arrows_on_screen()
 
             screenshot_bytes = self.controller.take_street_view_screenshot()
             if not screenshot_bytes:
