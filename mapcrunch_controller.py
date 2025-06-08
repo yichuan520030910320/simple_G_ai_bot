@@ -130,7 +130,7 @@ class MapCrunchController:
 
             # 策略B：优先尝试通过JS直接设置场景，速度最快
             if pano_id and pov:
-                print(f"✅ Loading location via JS Call: PanoID {pano_id[:10]}...")
+                # print(f"✅ Loading location via JS Call: PanoID {pano_id[:10]}...")
                 self.driver.execute_script(
                     "window.panorama.setPano(arguments[0]);"
                     "window.panorama.setPov(arguments[1]);",

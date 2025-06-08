@@ -102,7 +102,8 @@ class MapGuesserBenchmark:
                     headless=self.headless,
                 ) as bot:
                     for i, sample in enumerate(test_samples):
-                        print(f"   📍 Sample {i + 1}/{len(test_samples)}")
+                        print('########################################################')
+                        print(f"📍 Sample {i + 1}/{len(test_samples)}")
                         try:
                             result = self.run_single_test_with_bot(bot, sample)
                             all_results.append(result)
@@ -114,7 +115,7 @@ class MapGuesserBenchmark:
                             dist_str = (
                                 f"{distance:.1f} km" if distance is not None else "N/A"
                             )
-                            print(f"   {status} (Distance: {dist_str})")
+                            print(f"{status} (Distance: {dist_str})")
 
                         except KeyboardInterrupt:
                             raise
@@ -165,6 +166,12 @@ class MapGuesserBenchmark:
         # **核心修复**: 从顶级的 "lat" 和 "lng" 键构造真实坐标字典
         true_coords = {"lat": location_data.get("lat"), "lng": location_data.get("lng")}
 
+        true_location = location_data["address"]
+        print(f"🔍 True location: {true_location}")
+        # print true coords
+        print(f"🔍 True coords: {true_coords}")
+        # print predicted coords
+        print(f"🔍 Predicted coords: {predicted_lat_lon}")
         distance_km = self.calculate_distance(true_coords, predicted_lat_lon)
 
         is_success = distance_km is not None and distance_km <= SUCCESS_THRESHOLD_KM
