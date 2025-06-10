@@ -151,6 +151,9 @@ class MapGuesserBenchmark:
 
         bot.controller.setup_clean_environment()
 
+        ## TODO add interactive mode to go ahead, turn around and zoom in/out
+        # Mat still need JS to operate but can use selenium to do it or wrap a MCP server
+
         screenshot = bot.take_screenshot()
         if not screenshot:
             return {

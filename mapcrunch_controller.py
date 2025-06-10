@@ -26,6 +26,17 @@ class MapCrunchController:
         """
         self.driver.execute_script("if(typeof hideLoc === 'function') hideLoc();")
         self.driver.execute_script("""
+            const menu = document.querySelector('#menu');
+            if (menu) menu.style.display = 'none';
+                                   
+            const social = document.querySelector('#social');
+            if (social) social.style.display = 'none';
+                                   
+            const googleImg = document.querySelector('img[alt="Google"]');
+            if (googleImg && googleImg.parentElement) {
+                googleImg.parentElement.style.display = 'none';
+            }
+
             const topBar = document.querySelector('#topbar');
             if (topBar) topBar.style.display = 'none';
 
@@ -34,6 +45,11 @@ class MapCrunchController:
             
             const infoFirstView = document.querySelector('#info-firstview');
             if (infoFirstView) infoFirstView.style.display = 'none';
+
+            const controlsToHide = document.querySelectorAll('.gm-style-cc'); controlsToHide.forEach(el => { el.style.display = 'none'; });
+            const keyboardButton = document.querySelector('button[aria-label="Keyboard shortcuts"]'); if (keyboardButton) { keyboardButton.style.display = 'none'; }
+
+
         """)
 
     def label_arrows_on_screen(self):
