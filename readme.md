@@ -1,4 +1,5 @@
-# Simple G AI Bot
+# Omniscient
+"The all-knowing AI that sees everything, knows everything"
 
 A versatile AI bot for image analysis and dataset curation with support for multiple AI models.
 
