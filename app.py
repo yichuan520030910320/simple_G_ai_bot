@@ -175,9 +175,12 @@ if start_button:
                                 response = bot.model.invoke(message)
                                 decision = bot._parse_agent_response(response)
 
-                                action = decision.get("action_details", {}).get(
-                                    "action"
-                                )
+                                if decision is None:
+                                    raise ValueError(
+                                        f"Failed to parse AI response: {response.content}"
+                                    )
+
+                                action = decision["action_details"]["action"]
                                 history[-1]["action"] = action
 
                                 # Show AI decision
