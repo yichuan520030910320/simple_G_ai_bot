@@ -15,7 +15,16 @@ SELECTORS = {
 # Data collection settings
 DATA_COLLECTION_CONFIG = {
     "wait_after_go": 3,
+    "thumbnail_size": (320, 240),
 }
+
+# Benchmark settings
+BENCHMARK_CONFIG = {
+    "data_collection_samples": 50,
+}
+
+# MapCrunch options
+MAPCRUNCH_OPTIONS = {}
 
 # Model configurations
 MODELS_CONFIG = {
@@ -37,8 +46,16 @@ MODELS_CONFIG = {
     },
 }
 
-# Data paths
-DATA_PATHS = {
-    "golden_labels": "data/golden_labels.json",
-    "results": "results/",
-}
+
+# Data paths - now supports named datasets
+def get_data_paths(dataset_name: str = "default"):
+    """Get data paths for a specific dataset"""
+    return {
+        "golden_labels": f"datasets/{dataset_name}/golden_labels.json",
+        "thumbnails": f"datasets/{dataset_name}/thumbnails/",
+        "results": f"results/{dataset_name}/",
+    }
+
+
+# Backward compatibility - default paths
+DATA_PATHS = get_data_paths("default")

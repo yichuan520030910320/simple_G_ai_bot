@@ -1,0 +1,159 @@
+{
+  "metadata": {
+    "dataset_name": "asia",
+    "collection_date": "2025-06-11T21:13:45.005091",
+    "collection_options": {}
+  },
+  "samples": [
+    {
+      "id": "fdbb9997-c07c-4d4d-9095-82f162f0c27a",
+      "timestamp": "2025-06-11T21:13:15.310368",
+      "lat": 42.1322878067665,
+      "lng": 26.787410093767097,
+      "address": "Unknown",
+      "pano_id": "gsRLllGBndoh4EMBklXL9Q",
+      "pov": {
+        "heading": 240.93000000000006,
+        "pitch": 5,
+        "zoom": 1.0000051533649421
+      },
+      "url_slug": "42.132288_26.787410_240.93_-5.00_0",
+      "thumbnail_path": "fdbb9997-c07c-4d4d-9095-82f162f0c27a.jpg"
+    },
+    {
+      "id": "05ac7262-54b6-4b81-b9be-85d0830d7ed1",
+      "timestamp": "2025-06-11T21:13:18.720025",
+      "lat": 50.815127864126566,
+      "lng": 3.3295800788973042,
+      "address": "Unknown",
+      "pano_id": "lw4NuJ2I82JRsk5y8N7gGA",
+      "pov": {
+        "heading": -262.06999999999994,
+        "pitch": 5,
+        "zoom": 1.0000070740241276
+      },
+      "url_slug": "50.815128_3.329580_-262.07_-5.00_0",
+      "thumbnail_path": "05ac7262-54b6-4b81-b9be-85d0830d7ed1.jpg"
+    },
+    {
+      "id": "9fff9f32-e6f0-4f5f-a476-d019ec8b5bf2",
+      "timestamp": "2025-06-11T21:13:21.994062",
+      "lat": 45.43514041007389,
+      "lng": 21.364097624705536,
+      "address": "Unknown",
+      "pano_id": "XLiyeDvQ9SoaSaDBxn3GDA",
+      "pov": {
+        "heading": -168.06999999999994,
+        "pitch": 5,
+        "zoom": 1.000006919588194
+      },
+      "url_slug": "45.435140_21.364098_-168.07_-5.00_0",
+      "thumbnail_path": "9fff9f32-e6f0-4f5f-a476-d019ec8b5bf2.jpg"
+    },
+    {
+      "id": "2da4a9b9-e597-46e9-8c9d-8701f0c63462",
+      "timestamp": "2025-06-11T21:13:25.252476",
+      "lat": 42.30902518065906,
+      "lng": 77.8748629197877,
+      "address": "Unknown",
+      "pano_id": "t0HJFo38t3rh1U6W2OZ_VA",
+      "pov": {
+        "heading": 5.930000000000064,
+        "pitch": 5,
+        "zoom": 1.0000092331912114
+      },
+      "url_slug": "42.309025_77.874863_5.93_-5.00_0",
+      "thumbnail_path": "2da4a9b9-e597-46e9-8c9d-8701f0c63462.jpg"
+    },
+    {
+      "id": "b93858db-454e-4cc7-8f61-a3fe09cb0cab",
+      "timestamp": "2025-06-11T21:13:28.569143",
+      "lat": 14.647613688319248,
+      "lng": -16.980851505792,
+      "address": "Unknown",
+      "pano_id": "GE8DtAXvn2qZuSALopw8xA",
+      "pov": {
+        "heading": 270.93000000000006,
+        "pitch": 5,
+        "zoom": 1.0000015226193344
+      },
+      "url_slug": "14.647614_-16.980852_270.93_-5.00_0",
+      "thumbnail_path": "b93858db-454e-4cc7-8f61-a3fe09cb0cab.jpg"
+    },
+    {
+      "id": "1f0e20f1-3687-4939-be23-7c7b490cc707",
+      "timestamp": "2025-06-11T21:13:31.763851",
+      "lat": 11.208463091095442,
+      "lng": 105.72569729813453,
+      "address": "Unknown",
+      "pano_id": "2W3x5T-dMOrMJO57YtGq2Q",
+      "pov": {
+        "heading": -316.06999999999994,
+        "pitch": 5,
+        "zoom": 1.000004517085056
+      },
+      "url_slug": "11.208463_105.725697_-316.07_-5.00_0",
+      "thumbnail_path": "1f0e20f1-3687-4939-be23-7c7b490cc707.jpg"
+    },
+    {
+      "id": "7a2049cc-959c-4948-8574-0ffe9950e86e",
+      "timestamp": "2025-06-11T21:13:35.017287",
+      "lat": 40.668879231679576,
+      "lng": -8.21452809466328,
+      "address": "Unknown",
+      "pano_id": "bYHqbKkNgUUffaYf6fcKBQ",
+      "pov": {
+        "heading": -86.06999999999994,
+        "pitch": 5,
+        "zoom": 1.0000035631232127
+      },
+      "url_slug": "40.668879_-8.214528_-86.07_-5.00_0",
+      "thumbnail_path": "7a2049cc-959c-4948-8574-0ffe9950e86e.jpg"
+    },
+    {
+      "id": "fec89220-b130-49b3-8c19-f7e2e9551acf",
+      "timestamp": "2025-06-11T21:13:38.277525",
+      "lat": 5.459666786657994,
+      "lng": -2.1135681235966626,
+      "address": "Unknown",
+      "pano_id": "AaoI1zHJ4Pf18j94UXqksA",
+      "pov": {
+        "heading": 122.93000000000006,
+        "pitch": 5,
+        "zoom": 1.0000018586016313
+      },
+      "url_slug": "5.459667_-2.113568_122.93_-5.00_0",
+      "thumbnail_path": "fec89220-b130-49b3-8c19-f7e2e9551acf.jpg"
+    },
+    {
+      "id": "0fd8d569-c98a-4af3-b08c-173121c76043",
+      "timestamp": "2025-06-11T21:13:41.520505",
+      "lat": 1.3921814170475024,
+      "lng": 103.98320353936504,
+      "address": "Unknown",
+      "pano_id": "CAoSF0NJSE0wb2dLRUlDQWdJQ2t3T1h4bWdF",
+      "pov": {
+        "heading": 278.93000000000006,
+        "pitch": 5,
+        "zoom": 1.0000078101439185
+      },
+      "url_slug": "1.392181_103.983204_278.93_-5.00_0",
+      "thumbnail_path": "0fd8d569-c98a-4af3-b08c-173121c76043.jpg"
+    },
+    {
+      "id": "2426fad0-aeda-426a-96ad-f16724c360ce",
+      "timestamp": "2025-06-11T21:13:44.746699",
+      "lat": 51.89795854217673,
+      "lng": 4.96480321921333,
+      "address": "Unknown",
+      "pano_id": "bxBt_sZjG7ocUqPSmD1X0Q",
+      "pov": {
+        "heading": -175.06999999999994,
+        "pitch": 5,
+        "zoom": 1.0000093258133977
+      },
+      "url_slug": "51.897959_4.964803_-175.07_-5.00_0",
+      "thumbnail_path": "2426fad0-aeda-426a-96ad-f16724c360ce.jpg"
+    }
+  ]
+}

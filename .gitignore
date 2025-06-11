@@ -2,6 +2,16 @@ venv/
 .env
 __pycache__
 .DS_Store
+
+# Results directory (temporary benchmark results)
+results/
+
+# Dataset thumbnails (too large for git, can be regenerated)
+datasets/*/thumbnails/
+
+# Keep the actual dataset files (golden_labels.json)
+!datasets/*/golden_labels.json
+
+# Legacy data directory (can be removed if no longer used)
 data/
 !data/golden_labels.json
-results/

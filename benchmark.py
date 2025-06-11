@@ -1,4 +1,4 @@
-# benchmark.py (Final Fix)
+# benchmark.py (Updated for Named Datasets)
 
 import os
 import json
@@ -9,18 +9,22 @@ from pathlib import Path
 import math
 
 from geo_bot import GeoBot
-from config import DATA_PATHS, MODELS_CONFIG, SUCCESS_THRESHOLD_KM
+from config import get_data_paths, MODELS_CONFIG, SUCCESS_THRESHOLD_KM
 
 
 class MapGuesserBenchmark:
-    def __init__(self, headless: bool = False):
+    def __init__(self, dataset_name: str = "default", headless: bool = False):
+        self.dataset_name = dataset_name
+        self.data_paths = get_data_paths(dataset_name)
         self.headless = headless
         self.golden_labels = self.load_golden_labels()
-        print(f"📊 Loaded {len(self.golden_labels)} golden label samples")
+        print(
+            f"📊 Loaded {len(self.golden_labels)} samples from dataset '{dataset_name}'"
+        )
 
     def load_golden_labels(self) -> List[Dict]:
         try:
-            with open(DATA_PATHS["golden_labels"], "r") as f:
+            with open(self.data_paths["golden_labels"], "r") as f:
                 return json.load(f).get("samples", [])
         except Exception:
             return []
@@ -75,10 +79,11 @@ class MapGuesserBenchmark:
         **kwargs,
     ) -> Dict:
         if not self.golden_labels:
-            raise ValueError("No golden labels available.")
+            raise ValueError(
+                f"No golden labels available in dataset '{self.dataset_name}'."
+            )
 
         models_to_test = models or list(MODELS_CONFIG.keys())
-        # 使用 max_samples 限制测试样本数量
         num_to_test = (
             min(max_samples, len(self.golden_labels))
             if max_samples is not None
@@ -86,7 +91,7 @@ class MapGuesserBenchmark:
         )
         test_samples = self.golden_labels[:num_to_test]
 
-        print(f"🚀 Starting LIVE benchmark:")
+        print(f"🚀 Starting benchmark on dataset '{self.dataset_name}':")
         print(f"   Models: {models_to_test}")
         print(f"   Samples: {len(test_samples)}")
         print(f"   Temperature: {temperature}")
@@ -105,7 +110,9 @@ class MapGuesserBenchmark:
                     temperature=temperature,
                 ) as bot:
                     for i, sample in enumerate(test_samples):
-                        print('########################################################')
+                        print(
+                            "########################################################"
+                        )
                         print(f"📍 Sample {i + 1}/{len(test_samples)}")
                         try:
                             result = self.run_single_test_with_bot(bot, sample)
@@ -154,9 +161,6 @@ class MapGuesserBenchmark:
 
         bot.controller.setup_clean_environment()
 
-        ## TODO add interactive mode to go ahead, turn around and zoom in/out
-        # Mat still need JS to operate but can use selenium to do it or wrap a MCP server
-
         screenshot = bot.take_screenshot()
         if not screenshot:
             return {
@@ -169,14 +173,11 @@ class MapGuesserBenchmark:
         predicted_lat_lon = bot.analyze_image(screenshot)
         inference_time = time.time() - start_time
 
-        # **核心修复**: 从顶级的 "lat" 和 "lng" 键构造真实坐标字典
         true_coords = {"lat": location_data.get("lat"), "lng": location_data.get("lng")}
 
         true_location = location_data["address"]
         print(f"🔍 True location: {true_location}")
-        # print true coords
         print(f"🔍 True coords: {true_coords}")
-        # print predicted coords
         print(f"🔍 Predicted coords: {predicted_lat_lon}")
         distance_km = self.calculate_distance(true_coords, predicted_lat_lon)
 
@@ -193,16 +194,18 @@ class MapGuesserBenchmark:
         }
 
     def save_results(self, results: List[Dict]):
-        # ... (此函数不变) ...
         if not results:
             return
         try:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            results_dir = Path(DATA_PATHS["results"])
+            results_dir = Path(self.data_paths["results"])
             results_dir.mkdir(parents=True, exist_ok=True)
             results_file = results_dir / f"benchmark_results_{timestamp}.json"
             output_data = {
-                "metadata": {"timestamp": datetime.now().isoformat()},
+                "metadata": {
+                    "dataset_name": self.dataset_name,
+                    "timestamp": datetime.now().isoformat(),
+                },
                 "results": results,
             }
             with open(results_file, "w") as f:
@@ -212,7 +215,6 @@ class MapGuesserBenchmark:
             print(f"❌ Error saving results: {e}")
 
     def generate_summary(self, results: List[Dict]) -> Dict:
-        # ... (此函数不变) ...
         summary = {}
         by_model = {}
         for r in results:
