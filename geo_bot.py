@@ -6,6 +6,7 @@ from typing import Tuple, List, Optional, Dict, Any, Type
 
 from PIL import Image
 from langchain_core.messages import HumanMessage, BaseMessage
+from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -75,12 +76,10 @@ class GeoBot:
         self.model_name = model_name
         self.temperature = temperature
         self.use_selenium = use_selenium
-        self.controller = (
-            MapCrunchController(headless=headless) if use_selenium else None
-        )
+        self.controller = MapCrunchController(headless=headless)
 
     @staticmethod
-    def pil_to_base64(image: Image) -> str:
+    def pil_to_base64(image: Image.Image) -> str:
         buffered = BytesIO()
         image.thumbnail((1024, 1024))
         image.save(buffered, format="PNG")
@@ -127,6 +126,7 @@ class GeoBot:
         Robustly parses JSON from the LLM response, handling markdown code blocks.
         """
         try:
+            assert isinstance(response.content, str), "Response content is not a string"
             content = response.content.strip()
             match = re.search(r"```json\s*(\{.*?\})\s*```", content, re.DOTALL)
             if match:
@@ -154,13 +154,13 @@ class GeoBot:
                 return None
 
             current_screenshot_b64 = self.pil_to_base64(
-                Image.open(BytesIO(screenshot_bytes))
+                image=Image.open(BytesIO(screenshot_bytes))
             )
             available_actions = self.controller.get_available_actions()
             print(f"Available actions: {available_actions}")
 
-            history_text = ""
-            image_b64_for_prompt = []
+            history_text: str = ""
+            image_b64_for_prompt: List[str] = []
             if not history:
                 history_text = "No history yet. This is the first step."
             else:
@@ -216,7 +216,7 @@ class GeoBot:
         print("Max steps reached. Agent did not make a final guess.")
         return None
 
-    def analyze_image(self, image: Image) -> Optional[Tuple[float, float]]:
+    def analyze_image(self, image: Image.Image) -> Optional[Tuple[float, float]]:
         image_b64 = self.pil_to_base64(image)
         message = self._create_llm_message(BENCHMARK_PROMPT, image_b64)
         response = self.model.invoke(message)
