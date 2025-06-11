@@ -163,43 +163,44 @@ if start_button:
                                 key=f"history_{i}_{step}",
                             )
 
-                            # Get AI response
-                            with st.spinner("AI thinking..."):
+                            # Force guess on last step or get AI decision
+                            if step_num == steps_per_sample:
+                                action = "GUESS"
+                                st.warning("Max steps reached. Forcing GUESS.")
+                            else:
+                                # Get AI response
                                 message = bot._create_message_with_history(
                                     prompt, [h["image_b64"] for h in history]
                                 )
                                 response = bot.model.invoke(message)
                                 decision = bot._parse_agent_response(response)
 
-                            if not decision:
-                                decision = {
-                                    "action_details": {"action": "PAN_RIGHT"},
-                                    "reasoning": "Fallback",
-                                }
+                                action = decision.get("action_details", {}).get(
+                                    "action"
+                                )
+                                history[-1]["action"] = action
 
-                            action = decision.get("action_details", {}).get("action")
-                            history[-1]["action"] = action
+                                # Show AI decision
+                                st.write("**AI Reasoning:**")
+                                st.info(decision.get("reasoning", "N/A"))
 
-                            # Show AI decision
-                            st.write("**AI Reasoning:**")
-                            st.info(decision.get("reasoning", "N/A"))
+                                st.write("**AI Action:**")
+                                st.success(f"`{action}`")
 
-                            st.write("**AI Action:**")
-                            st.success(f"`{action}`")
-
-                            # Show raw response
-                            with st.expander("Raw AI Response"):
-                                st.text(response.content)
-
-                        # Force guess on last step
-                        if step_num == steps_per_sample and action != "GUESS":
-                            st.warning("Max steps reached. Forcing GUESS.")
-                            action = "GUESS"
+                                # Show raw response
+                                with st.expander("Raw AI Response"):
+                                    st.text(response.content)
 
                         # Execute action
                         if action == "GUESS":
-                            lat = decision.get("action_details", {}).get("lat")
-                            lon = decision.get("action_details", {}).get("lon")
+                            if step_num == steps_per_sample:
+                                # Forced guess - use fallback coordinates
+                                lat, lon = 0.0, 0.0
+                                st.error("Forced guess with fallback coordinates")
+                            else:
+                                lat = decision.get("action_details", {}).get("lat")
+                                lon = decision.get("action_details", {}).get("lon")
+
                             if lat is not None and lon is not None:
                                 final_guess = (lat, lon)
                                 st.success(f"Final Guess: {lat:.4f}, {lon:.4f}")
@@ -213,6 +214,8 @@ if start_button:
                         elif action == "PAN_RIGHT":
                             bot.controller.pan_view("right")
 
+                        # Auto scroll to bottom
+                        st.empty()  # Force refresh to show latest content
                         time.sleep(1)
 
                 # Sample Results

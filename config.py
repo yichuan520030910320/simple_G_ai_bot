@@ -48,15 +48,15 @@ MODELS_CONFIG = {
         "model_name": "gemini-1.5-pro-latest",
         "description": "Google Gemini 1.5 Pro",
     },
-    "qwen2.5-vl-7b": {
+    "qwen2-vl-7b": {
         "class": "HuggingFaceChat",
-        "model_name": "Qwen/Qwen2.5-VL-7B-Instruct",
-        "description": "Qwen2.5-VL 7B Vision-Language",
+        "model_name": "Qwen/Qwen2-VL-7B-Instruct",
+        "description": "Qwen2-VL 7B (older but API supported)",
     },
-    "qwen2.5-vl-3b": {
+    "qwen2-vl-2b": {
         "class": "HuggingFaceChat",
-        "model_name": "Qwen/Qwen2.5-VL-3B-Instruct",
-        "description": "Qwen2.5-VL 3B Vision-Language",
+        "model_name": "Qwen/Qwen2-VL-2B-Instruct",
+        "description": "Qwen2-VL 2B (faster, API supported)",
     },
 }
 
