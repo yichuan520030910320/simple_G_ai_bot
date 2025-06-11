@@ -71,6 +71,7 @@ class MapGuesserBenchmark:
         self,
         models: Optional[List[str]] = None,
         max_samples: Optional[int] = None,
+        temperature: float = 0.0,
         **kwargs,
     ) -> Dict:
         if not self.golden_labels:
@@ -88,6 +89,7 @@ class MapGuesserBenchmark:
         print(f"🚀 Starting LIVE benchmark:")
         print(f"   Models: {models_to_test}")
         print(f"   Samples: {len(test_samples)}")
+        print(f"   Temperature: {temperature}")
 
         all_results = []
         for model_name in models_to_test:
@@ -100,6 +102,7 @@ class MapGuesserBenchmark:
                     model_name=model_class_name,
                     use_selenium=True,
                     headless=self.headless,
+                    temperature=temperature,
                 ) as bot:
                     for i, sample in enumerate(test_samples):
                         print('########################################################')

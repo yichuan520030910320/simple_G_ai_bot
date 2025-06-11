@@ -12,13 +12,13 @@ from benchmark import MapGuesserBenchmark
 from config import MODELS_CONFIG, DATA_PATHS, SUCCESS_THRESHOLD_KM
 
 
-def agent_mode(model_name: str, steps: int, headless: bool, samples: int):
+def agent_mode(model_name: str, steps: int, headless: bool, samples: int, temperature: float = 0.0):
     """
     Runs the AI Agent in a benchmark loop over multiple samples,
     using multi-step exploration for each.
     """
     print(
-        f"Starting Agent Mode (as a benchmark): model={model_name}, steps={steps}, samples={samples}"
+        f"Starting Agent Mode (as a benchmark): model={model_name}, steps={steps}, samples={samples}, temperature={temperature}"
     )
 
     try:
@@ -44,7 +44,7 @@ def agent_mode(model_name: str, steps: int, headless: bool, samples: int):
     all_results = []
 
     with GeoBot(
-        model=model_class, model_name=model_instance_name, headless=headless
+        model=model_class, model_name=model_instance_name, headless=headless, temperature=temperature
     ) as bot:
         for i, sample in enumerate(test_samples):
             print(
@@ -107,11 +107,11 @@ def agent_mode(model_name: str, steps: int, headless: bool, samples: int):
     print("\nAgent Mode finished.")
 
 
-def benchmark_mode(models: list, samples: int, headless: bool):
+def benchmark_mode(models: list, samples: int, headless: bool, temperature: float = 0.0):
     """Runs the benchmark on pre-collected data."""
-    print(f"Starting Benchmark Mode: models={models}, samples={samples}")
+    print(f"Starting Benchmark Mode: models={models}, samples={samples}, temperature={temperature}")
     benchmark = MapGuesserBenchmark(headless=headless)
-    summary = benchmark.run_benchmark(models=models, max_samples=samples)
+    summary = benchmark.run_benchmark(models=models, max_samples=samples, temperature=temperature)
     if summary:
         print("\n--- Benchmark Complete! Summary ---")
         for model, stats in summary.items():
@@ -152,6 +152,12 @@ def main():
         choices=list(MODELS_CONFIG.keys()),
         help="[Benchmark] Models to benchmark.",
     )
+    parser.add_argument(
+        "--temperature",
+        type=float,
+        default=0.0,
+        help="Temperature parameter for LLM sampling (0.0 = deterministic, higher = more random). Default: 0.0",
+    )
 
     args = parser.parse_args()
 
@@ -161,12 +167,14 @@ def main():
             steps=args.steps,
             headless=args.headless,
             samples=args.samples,
+            temperature=args.temperature,
         )
     elif args.mode == "benchmark":
         benchmark_mode(
             models=args.models or [args.model],
             samples=args.samples,
             headless=args.headless,
+            temperature=args.temperature,
         )
 
 

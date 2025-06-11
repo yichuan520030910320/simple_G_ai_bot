@@ -63,9 +63,17 @@ class GeoBot:
         model_name: str,
         use_selenium: bool = True,
         headless: bool = False,
+        temperature: float = 0.0,
     ):
-        self.model = model(model=model_name)
+        # Initialize model with temperature parameter
+        model_kwargs = {
+            "model": model_name,
+            "temperature": temperature,
+        }
+        
+        self.model = model(**model_kwargs)
         self.model_name = model_name
+        self.temperature = temperature
         self.use_selenium = use_selenium
         self.controller = (
             MapCrunchController(headless=headless) if use_selenium else None
