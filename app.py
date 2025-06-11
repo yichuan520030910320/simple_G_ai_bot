@@ -55,7 +55,6 @@ def get_model_class(class_name):
 st.set_page_config(page_title="🧠 Omniscient - AI Geographic Analysis", layout="wide")
 st.title("🧠 Omniscient")
 st.markdown("### *The all-knowing AI that sees everything, knows everything*")
-st.markdown("**Advanced AI-powered geographic image analysis and location detection**")
 
 # Sidebar
 with st.sidebar:
