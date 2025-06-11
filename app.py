@@ -5,6 +5,7 @@ import time
 from io import BytesIO
 from PIL import Image
 from typing import Dict, List, Any
+from pathlib import Path
 
 # Import core logic and configurations from the project
 from geo_bot import (
@@ -13,10 +14,29 @@ from geo_bot import (
     BENCHMARK_PROMPT,
 )
 from benchmark import MapGuesserBenchmark
-from config import MODELS_CONFIG, DATA_PATHS, SUCCESS_THRESHOLD_KM
+from config import MODELS_CONFIG, get_data_paths, SUCCESS_THRESHOLD_KM
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
+
+
+# --- Helper function ---
+def get_available_datasets():
+    """Get list of available datasets"""
+    datasets_dir = Path("datasets")
+    if not datasets_dir.exists():
+        return ["default"]
+
+    datasets = []
+    for dataset_dir in datasets_dir.iterdir():
+        if dataset_dir.is_dir():
+            dataset_name = dataset_dir.name
+            data_paths = get_data_paths(dataset_name)
+            if os.path.exists(data_paths["golden_labels"]):
+                datasets.append(dataset_name)
+
+    return datasets if datasets else ["default"]
+
 
 # --- Page UI Setup ---
 st.set_page_config(page_title="MapCrunch AI Agent", layout="wide")
@@ -34,22 +54,33 @@ with st.sidebar:
     os.environ["ANTHROPIC_API_KEY"] = st.secrets.get("ANTHROPIC_API_KEY", "")
     # os.environ['GOOGLE_API_KEY'] = st.secrets.get("GOOGLE_API_KEY", "")
 
+    # Dataset selection
+    available_datasets = get_available_datasets()
+    dataset_choice = st.selectbox("Select Dataset", available_datasets)
+
     model_choice = st.selectbox("Select AI Model", list(MODELS_CONFIG.keys()))
     steps_per_sample = st.slider(
         "Max Exploration Steps per Sample", min_value=3, max_value=20, value=10
     )
 
-    # Load golden labels for selection
+    # Load golden labels for selected dataset
+    data_paths = get_data_paths(dataset_choice)
     try:
-        with open(DATA_PATHS["golden_labels"], "r", encoding="utf-8") as f:
+        with open(data_paths["golden_labels"], "r", encoding="utf-8") as f:
             golden_labels = json.load(f).get("samples", [])
         total_samples = len(golden_labels)
+
+        st.info(f"Dataset '{dataset_choice}' has {total_samples} samples")
+
         num_samples_to_run = st.slider(
-            "Number of Samples to Test", min_value=1, max_value=total_samples, value=3
+            "Number of Samples to Test",
+            min_value=1,
+            max_value=total_samples,
+            value=min(3, total_samples),
         )
     except FileNotFoundError:
         st.error(
-            f"Data file '{DATA_PATHS['golden_labels']}' not found. Please prepare the data."
+            f"Dataset '{dataset_choice}' not found at {data_paths['golden_labels']}. Please create the dataset first."
         )
         golden_labels = []
         num_samples_to_run = 0
@@ -68,11 +99,11 @@ if start_button:
     model_instance_name = config["model_name"]
 
     # Initialize helpers and result lists
-    benchmark_helper = MapGuesserBenchmark()
+    benchmark_helper = MapGuesserBenchmark(dataset_name=dataset_choice)
     all_results = []
 
     st.info(
-        f"Starting Agent Benchmark... Model: {model_choice}, Steps: {steps_per_sample}, Samples: {num_samples_to_run}"
+        f"Starting Agent Benchmark... Dataset: {dataset_choice}, Model: {model_choice}, Steps: {steps_per_sample}, Samples: {num_samples_to_run}"
     )
 
     overall_progress_bar = st.progress(0, text="Overall Progress")
