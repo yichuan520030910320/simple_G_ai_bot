@@ -57,7 +57,7 @@ st.title("🗺️ MapCrunch AI Agent")
 
 # Sidebar
 with st.sidebar:
-    st.header("⚙️ Configuration")
+    st.header("Configuration")
 
     dataset_choice = st.selectbox("Dataset", get_available_datasets())
     model_choice = st.selectbox("Model", list(MODELS_CONFIG.keys()))
@@ -91,137 +91,201 @@ if start_button:
     ) as bot:
         for i, sample in enumerate(test_samples):
             st.divider()
-            st.header(f"Sample {i + 1}/{num_samples}")
+            st.header(f"Sample {i + 1}/{num_samples} - ID: {sample.get('id', 'N/A')}")
 
             bot.controller.load_location_from_data(sample)
             bot.controller.setup_clean_environment()
 
-            col1, col2 = st.columns([2, 3])
+            # Create scrollable container for this sample
+            sample_container = st.container()
 
-            with col1:
-                image_placeholder = st.empty()
-            with col2:
-                reasoning_placeholder = st.empty()
-                action_placeholder = st.empty()
+            with sample_container:
+                # Initialize step tracking
+                history = []
+                final_guess = None
 
-            history = []
-            final_guess = None
+                for step in range(steps_per_sample):
+                    step_num = step + 1
 
-            for step in range(steps_per_sample):
-                step_num = step + 1
-                reasoning_placeholder.info(f"🤔 Step {step_num}/{steps_per_sample}")
+                    # Create step container
+                    with st.container():
+                        st.subheader(f"Step {step_num}/{steps_per_sample}")
 
-                bot.controller.label_arrows_on_screen()
-                screenshot_bytes = bot.controller.take_street_view_screenshot()
-                image_placeholder.image(screenshot_bytes, caption=f"Step {step_num}")
+                        # Take screenshot and show
+                        bot.controller.label_arrows_on_screen()
+                        screenshot_bytes = bot.controller.take_street_view_screenshot()
 
-                current_step = {
-                    "image_b64": bot.pil_to_base64(
-                        Image.open(BytesIO(screenshot_bytes))
-                    ),
-                    "action": "N/A",
-                }
-                history.append(current_step)
+                        col1, col2 = st.columns([1, 2])
 
-                available_actions = bot.controller.get_available_actions()
-                history_text = "\n".join(
-                    [f"Step {j + 1}: {h['action']}" for j, h in enumerate(history[:-1])]
-                )
-                if not history_text:
-                    history_text = "First step."
+                        with col1:
+                            st.image(
+                                screenshot_bytes,
+                                caption=f"What AI sees",
+                                use_column_width=True,
+                            )
 
-                prompt = AGENT_PROMPT_TEMPLATE.format(
-                    remaining_steps=steps_per_sample - step,
-                    history_text=history_text,
-                    available_actions=json.dumps(available_actions),
-                )
+                        with col2:
+                            # Build history for AI
+                            current_step = {
+                                "image_b64": bot.pil_to_base64(
+                                    Image.open(BytesIO(screenshot_bytes))
+                                ),
+                                "action": "N/A",
+                            }
+                            history.append(current_step)
 
-                message = bot._create_message_with_history(
-                    prompt, [h["image_b64"] for h in history]
-                )
-                response = bot.model.invoke(message)
-                decision = bot._parse_agent_response(response)
+                            available_actions = bot.controller.get_available_actions()
+                            history_text = "\n".join(
+                                [
+                                    f"Step {j + 1}: {h['action']}"
+                                    for j, h in enumerate(history[:-1])
+                                ]
+                            )
+                            if not history_text:
+                                history_text = "First step."
 
-                if not decision:
-                    decision = {
-                        "action_details": {"action": "PAN_RIGHT"},
-                        "reasoning": "Fallback",
+                            prompt = AGENT_PROMPT_TEMPLATE.format(
+                                remaining_steps=steps_per_sample - step,
+                                history_text=history_text,
+                                available_actions=json.dumps(available_actions),
+                            )
+
+                            # Show AI context
+                            st.write("**Available Actions:**")
+                            st.code(json.dumps(available_actions, indent=2))
+
+                            st.write("**AI Context:**")
+                            st.text_area(
+                                "History",
+                                history_text,
+                                height=100,
+                                disabled=True,
+                                key=f"history_{i}_{step}",
+                            )
+
+                            # Get AI response
+                            with st.spinner("AI thinking..."):
+                                message = bot._create_message_with_history(
+                                    prompt, [h["image_b64"] for h in history]
+                                )
+                                response = bot.model.invoke(message)
+                                decision = bot._parse_agent_response(response)
+
+                            if not decision:
+                                decision = {
+                                    "action_details": {"action": "PAN_RIGHT"},
+                                    "reasoning": "Fallback",
+                                }
+
+                            action = decision.get("action_details", {}).get("action")
+                            history[-1]["action"] = action
+
+                            # Show AI decision
+                            st.write("**AI Reasoning:**")
+                            st.info(decision.get("reasoning", "N/A"))
+
+                            st.write("**AI Action:**")
+                            st.success(f"`{action}`")
+
+                            # Show raw response
+                            with st.expander("Raw AI Response"):
+                                st.text(response.content)
+
+                        # Force guess on last step
+                        if step_num == steps_per_sample and action != "GUESS":
+                            st.warning("Max steps reached. Forcing GUESS.")
+                            action = "GUESS"
+
+                        # Execute action
+                        if action == "GUESS":
+                            lat = decision.get("action_details", {}).get("lat")
+                            lon = decision.get("action_details", {}).get("lon")
+                            if lat is not None and lon is not None:
+                                final_guess = (lat, lon)
+                                st.success(f"Final Guess: {lat:.4f}, {lon:.4f}")
+                            break
+                        elif action == "MOVE_FORWARD":
+                            bot.controller.move("forward")
+                        elif action == "MOVE_BACKWARD":
+                            bot.controller.move("backward")
+                        elif action == "PAN_LEFT":
+                            bot.controller.pan_view("left")
+                        elif action == "PAN_RIGHT":
+                            bot.controller.pan_view("right")
+
+                        time.sleep(1)
+
+                # Sample Results
+                st.subheader("Sample Result")
+                true_coords = {"lat": sample.get("lat"), "lng": sample.get("lng")}
+                distance_km = None
+                is_success = False
+
+                if final_guess:
+                    distance_km = benchmark_helper.calculate_distance(
+                        true_coords, final_guess
+                    )
+                    if distance_km is not None:
+                        is_success = distance_km <= SUCCESS_THRESHOLD_KM
+
+                    col1, col2, col3 = st.columns(3)
+                    col1.metric(
+                        "Final Guess", f"{final_guess[0]:.3f}, {final_guess[1]:.3f}"
+                    )
+                    col2.metric(
+                        "Ground Truth",
+                        f"{true_coords['lat']:.3f}, {true_coords['lng']:.3f}",
+                    )
+                    col3.metric(
+                        "Distance",
+                        f"{distance_km:.1f} km",
+                        delta="Success" if is_success else "Failed",
+                    )
+                else:
+                    st.error("No final guess made")
+
+                all_results.append(
+                    {
+                        "sample_id": sample.get("id"),
+                        "model": model_choice,
+                        "true_coordinates": true_coords,
+                        "predicted_coordinates": final_guess,
+                        "distance_km": distance_km,
+                        "success": is_success,
                     }
-
-                action = decision.get("action_details", {}).get("action")
-                history[-1]["action"] = action
-
-                reasoning_placeholder.success("✅ Decision Made")
-                action_placeholder.success(f"🎯 Action: `{action}`")
-
-                with action_placeholder:
-                    with st.expander("Reasoning"):
-                        st.write(decision.get("reasoning", "N/A"))
-
-                if step_num == steps_per_sample and action != "GUESS":
-                    action = "GUESS"
-
-                if action == "GUESS":
-                    lat = decision.get("action_details", {}).get("lat")
-                    lon = decision.get("action_details", {}).get("lon")
-                    if lat is not None and lon is not None:
-                        final_guess = (lat, lon)
-                    break
-                elif action == "MOVE_FORWARD":
-                    bot.controller.move("forward")
-                elif action == "MOVE_BACKWARD":
-                    bot.controller.move("backward")
-                elif action == "PAN_LEFT":
-                    bot.controller.pan_view("left")
-                elif action == "PAN_RIGHT":
-                    bot.controller.pan_view("right")
-
-                time.sleep(1)
-
-            # Results
-            true_coords = {"lat": sample.get("lat"), "lng": sample.get("lng")}
-            distance_km = None
-            is_success = False
-
-            if final_guess:
-                distance_km = benchmark_helper.calculate_distance(
-                    true_coords, final_guess
                 )
-                if distance_km is not None:
-                    is_success = distance_km <= SUCCESS_THRESHOLD_KM
-
-                st.subheader("🎯 Result")
-                col1, col2, col3 = st.columns(3)
-                col1.metric("Guess", f"{final_guess[0]:.3f}, {final_guess[1]:.3f}")
-                col2.metric(
-                    "Truth", f"{true_coords['lat']:.3f}, {true_coords['lng']:.3f}"
-                )
-                col3.metric(
-                    "Distance",
-                    f"{distance_km:.1f} km",
-                    delta="Success" if is_success else "Failed",
-                )
-
-            all_results.append(
-                {
-                    "sample_id": sample.get("id"),
-                    "model": model_choice,
-                    "true_coordinates": true_coords,
-                    "predicted_coordinates": final_guess,
-                    "distance_km": distance_km,
-                    "success": is_success,
-                }
-            )
 
             progress_bar.progress((i + 1) / num_samples)
 
-    # Summary
+    # Final Summary
     st.divider()
-    st.header("🏁 Summary")
+    st.header("🏁 Final Results")
+
     summary = benchmark_helper.generate_summary(all_results)
     if summary and model_choice in summary:
         stats = summary[model_choice]
-        col1, col2 = st.columns(2)
+
+        # Overall metrics
+        col1, col2, col3 = st.columns(3)
         col1.metric("Success Rate", f"{stats.get('success_rate', 0) * 100:.1f}%")
-        col2.metric("Avg Distance", f"{stats.get('average_distance_km', 0):.1f} km")
-        st.dataframe(all_results)
+        col2.metric("Average Distance", f"{stats.get('average_distance_km', 0):.1f} km")
+        col3.metric("Total Samples", len(all_results))
+
+        # Detailed results table
+        st.subheader("Detailed Results")
+        st.dataframe(all_results, use_container_width=True)
+
+        # Success breakdown
+        successes = [r for r in all_results if r["success"]]
+        failures = [r for r in all_results if not r["success"]]
+
+        if successes:
+            st.subheader("Successful Samples")
+            st.dataframe(successes, use_container_width=True)
+
+        if failures:
+            st.subheader("Failed Samples")
+            st.dataframe(failures, use_container_width=True)
+    else:
+        st.error("Could not generate summary")
+        st.dataframe(all_results, use_container_width=True)
