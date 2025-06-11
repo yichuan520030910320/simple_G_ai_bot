@@ -21,9 +21,9 @@ class HuggingFaceChat(BaseChatModel):
     api_token: Optional[str] = Field(default=None, description="HF API token")
 
     def __init__(self, model: str, temperature: float = 0.0, **kwargs):
-        api_token = kwargs.get("api_token") or os.getenv("HUGGINGFACE_API_KEY")
+        api_token = kwargs.get("api_token") or os.getenv("HF_TOKEN")
         if not api_token:
-            raise ValueError("HUGGINGFACE_API_KEY environment variable is required")
+            raise ValueError("HF_TOKEN environment variable is required")
 
         super().__init__(
             model=model, temperature=temperature, api_token=api_token, **kwargs
