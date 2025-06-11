@@ -1,3 +1,15 @@
+---
+title: Omniscient
+emoji: 👁️‍🗨️
+colorFrom: indigo
+colorTo: purple
+sdk: streamlit
+python_version: 3.11
+sdk_version: "1.35.0"
+app_file: app.py
+pinned: false
+---
+
 # Omniscient
 "The all-knowing AI that sees everything, knows everything"
 
