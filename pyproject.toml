@@ -116,6 +116,7 @@ dependencies = [
     "tqdm==4.66.5",
     "traitlets==5.14.3",
     "typing-extensions==4.12.2",
+    "undetected-chromedriver>=3.5.5",
     "uritemplate==4.1.1",
     "urllib3==2.2.3",
     "wcwidth==0.2.13",

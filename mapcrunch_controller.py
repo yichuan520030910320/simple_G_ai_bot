@@ -1,7 +1,7 @@
 import time
 from typing import Dict, Optional, List
 
-from selenium import webdriver
+import undetected_chromedriver as uc
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -11,12 +11,44 @@ from config import MAPCRUNCH_URL, SELECTORS, DATA_COLLECTION_CONFIG
 
 class MapCrunchController:
     def __init__(self, headless: bool = False):
-        options = webdriver.ChromeOptions()
-        if headless:
-            options.add_argument("--headless")
+        options = uc.ChromeOptions()
+        options.add_argument(
+            "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+        )
         options.add_argument("--window-size=1920,1080")
-        self.driver = webdriver.Chrome(options=options)
+        options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
+
+        if headless:
+            options.add_argument("--headless=new")
+
+        self.driver = uc.Chrome(options=options, use_subprocess=True)
         self.wait = WebDriverWait(self.driver, 10)
+
+        # Here we are injecting a script to the page to disable the browser detection.
+        # Basically, we are setting the badBrowser property to 0, which is a property that is used to detect if the browser is being controlled by a script.
+        # In the main.min.js, we can see some js code like this:
+        # if (badBrowser) {
+        #     alert("Unsupported browser!");
+        # } else {
+        #     window.panorama = { ... }
+        # }
+        self.driver.execute_cdp_cmd(
+            "Page.addScriptToEvaluateOnNewDocument",
+            {
+                "source": """
+                Object.defineProperty(window, 'badBrowser', {
+                  value: 0,
+                  writable: false,
+                  configurable: false
+                });
+                window.alert = function() {};
+                Object.defineProperty(navigator, 'webdriver', {
+                  get: () => undefined
+                });
+            """
+            },
+        )
+
         self.driver.get(MAPCRUNCH_URL)
         time.sleep(3)
 
