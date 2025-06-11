@@ -136,63 +136,138 @@ if start_button:
         # --- Inner agent exploration loop ---
         history = []
         final_guess = None
+        step_history_container = st.container()
 
         for step in range(steps_per_sample):
             step_num = step + 1
             reasoning_placeholder.info(
-                f"Thinking... (Step {step_num}/{steps_per_sample})"
+                f"🤔 Thinking... (Step {step_num}/{steps_per_sample})"
             )
             action_placeholder.empty()
 
             # Observe and label arrows
             bot.controller.label_arrows_on_screen()
             screenshot_bytes = bot.controller.take_street_view_screenshot()
+
+            # Current view
             image_placeholder.image(
-                screenshot_bytes, caption=f"Step {step_num} View", use_column_width=True
+                screenshot_bytes,
+                caption=f"🔍 Step {step_num} - What AI Sees Now",
+                use_column_width=True,
             )
 
             # Update history
-            history.append(
-                {
-                    "image_b64": bot.pil_to_base64(
-                        Image.open(BytesIO(screenshot_bytes))
-                    ),
-                    "action": "N/A",
-                }
-            )
+            current_step_data = {
+                "image_b64": bot.pil_to_base64(Image.open(BytesIO(screenshot_bytes))),
+                "action": "N/A",
+                "screenshot_bytes": screenshot_bytes,
+                "step_num": step_num,
+            }
+            history.append(current_step_data)
 
             # Think
+            available_actions = bot.controller.get_available_actions()
+            history_text = "\n".join(
+                [f"Step {j + 1}: {h['action']}" for j, h in enumerate(history[:-1])]
+            )
+            if not history_text:
+                history_text = "No history yet. This is the first step."
+
             prompt = AGENT_PROMPT_TEMPLATE.format(
                 remaining_steps=steps_per_sample - step,
-                history_text="\n".join(
-                    [f"Step {j + 1}: {h['action']}" for j, h in enumerate(history)]
-                ),
-                available_actions=json.dumps(bot.controller.get_available_actions()),
+                history_text=history_text,
+                available_actions=json.dumps(available_actions),
             )
+
+            # Show what AI is considering
+            with reasoning_placeholder:
+                st.info("🧠 **AI is analyzing the situation...**")
+                with st.expander("🔍 Available Actions", expanded=False):
+                    st.json(available_actions)
+                with st.expander("📝 Context Being Considered", expanded=False):
+                    st.text_area(
+                        "History Context:", history_text, height=100, disabled=True
+                    )
+
             message = bot._create_message_with_history(
                 prompt, [h["image_b64"] for h in history]
             )
+
+            # Get AI response
             response = bot.model.invoke(message)
             decision = bot._parse_agent_response(response)
 
             if not decision:  # Fallback
                 decision = {
                     "action_details": {"action": "PAN_RIGHT"},
-                    "reasoning": "Default recovery.",
+                    "reasoning": "⚠️ Response parsing failed. Using default recovery action.",
                 }
 
             action = decision.get("action_details", {}).get("action")
             history[-1]["action"] = action
-
-            reasoning_placeholder.info(
-                f"**AI Reasoning:**\n\n{decision.get('reasoning', 'N/A')}"
+            history[-1]["reasoning"] = decision.get("reasoning", "N/A")
+            history[-1]["raw_response"] = (
+                response.content[:500] + "..."
+                if len(response.content) > 500
+                else response.content
             )
-            action_placeholder.success(f"**AI Action:** `{action}`")
+
+            # Display AI's decision process
+            reasoning_placeholder.success("✅ **AI Decision Made!**")
+
+            with action_placeholder:
+                st.success(f"🎯 **AI Action:** `{action}`")
+
+                # Detailed reasoning display
+                with st.expander("🧠 AI's Detailed Thinking Process", expanded=True):
+                    col_reason, col_raw = st.columns([2, 1])
+
+                    with col_reason:
+                        st.markdown("**🤔 AI's Reasoning:**")
+                        st.info(decision.get("reasoning", "N/A"))
+
+                        if action == "GUESS":
+                            lat = decision.get("action_details", {}).get("lat")
+                            lon = decision.get("action_details", {}).get("lon")
+                            if lat and lon:
+                                st.success(f"📍 **Final Guess:** {lat:.4f}, {lon:.4f}")
+
+                    with col_raw:
+                        st.markdown("**🔤 Raw AI Response:**")
+                        st.text_area(
+                            "Full Response:",
+                            history[-1]["raw_response"],
+                            height=200,
+                            disabled=True,
+                            key=f"raw_response_{step_num}",
+                        )
+
+            # Store step in history display
+            with step_history_container:
+                with st.expander(f"📚 Step {step_num} History", expanded=False):
+                    hist_col1, hist_col2 = st.columns([1, 2])
+                    with hist_col1:
+                        st.image(
+                            screenshot_bytes, caption=f"Step {step_num} View", width=200
+                        )
+                    with hist_col2:
+                        st.write(f"**Action:** {action}")
+                        st.write(
+                            f"**Reasoning:** {decision.get('reasoning', 'N/A')[:150]}..."
+                        )
 
             # Force a GUESS on the last step
             if step_num == steps_per_sample and action != "GUESS":
-                st.warning("Max steps reached. Forcing a GUESS action.")
+                st.warning("⏰ Max steps reached. Forcing a GUESS action.")
                 action = "GUESS"
+                # Force coordinates if missing
+                if not decision.get("action_details", {}).get("lat"):
+                    st.error("❌ AI didn't provide coordinates. Using fallback guess.")
+                    decision["action_details"] = {
+                        "action": "GUESS",
+                        "lat": 0.0,
+                        "lon": 0.0,
+                    }
 
             # Act
             if action == "GUESS":
@@ -204,18 +279,22 @@ if start_button:
                     final_guess = (lat, lon)
                 else:
                     st.error(
-                        "GUESS action was missing coordinates. Guess failed for this sample."
+                        "❌ GUESS action was missing coordinates. Guess failed for this sample."
                     )
                 break  # End exploration for the current sample
 
             elif action == "MOVE_FORWARD":
-                bot.controller.move("forward")
+                with st.spinner("🚶 Moving forward..."):
+                    bot.controller.move("forward")
             elif action == "MOVE_BACKWARD":
-                bot.controller.move("backward")
+                with st.spinner("🔄 Moving backward..."):
+                    bot.controller.move("backward")
             elif action == "PAN_LEFT":
-                bot.controller.pan_view("left")
+                with st.spinner("⬅️ Panning left..."):
+                    bot.controller.pan_view("left")
             elif action == "PAN_RIGHT":
-                bot.controller.pan_view("right")
+                with st.spinner("➡️ Panning right..."):
+                    bot.controller.pan_view("right")
 
             time.sleep(1)  # A brief pause between steps for better visualization
 

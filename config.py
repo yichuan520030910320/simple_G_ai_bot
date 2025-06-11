@@ -31,18 +31,44 @@ MODELS_CONFIG = {
     "gpt-4o": {
         "class": "ChatOpenAI",
         "model_name": "gpt-4o",
+        "api_key_env": "OPENAI_API_KEY",
+        "description": "OpenAI GPT-4o",
+    },
+    "gpt-4o-mini": {
+        "class": "ChatOpenAI",
+        "model_name": "gpt-4o-mini",
+        "api_key_env": "OPENAI_API_KEY",
+        "description": "OpenAI GPT-4o Mini (cheaper)",
     },
     "claude-3.5-sonnet": {
         "class": "ChatAnthropic",
         "model_name": "claude-3-5-sonnet-20240620",
+        "api_key_env": "ANTHROPIC_API_KEY",
+        "description": "Anthropic Claude 3.5 Sonnet",
     },
     "gemini-1.5-pro": {
         "class": "ChatGoogleGenerativeAI",
         "model_name": "gemini-1.5-pro-latest",
+        "api_key_env": "GOOGLE_API_KEY",
+        "description": "Google Gemini 1.5 Pro",
     },
     "gemini-2.5-pro": {
         "class": "ChatGoogleGenerativeAI",
         "model_name": "gemini-2.5-pro-preview-06-05",
+        "api_key_env": "GOOGLE_API_KEY",
+        "description": "Google Gemini 2.5 Pro",
+    },
+    "qwen2-vl-72b": {
+        "class": "HuggingFaceChat",
+        "model_name": "Qwen/Qwen2-VL-72B-Instruct",
+        "api_key_env": "HUGGINGFACE_API_KEY",
+        "description": "Qwen2-VL 72B (via HF Inference API)",
+    },
+    "qwen2-vl-7b": {
+        "class": "HuggingFaceChat",
+        "model_name": "Qwen/Qwen2-VL-7B-Instruct",
+        "api_key_env": "HUGGINGFACE_API_KEY",
+        "description": "Qwen2-VL 7B (via HF Inference API)",
     },
 }
 

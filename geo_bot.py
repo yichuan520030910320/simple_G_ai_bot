@@ -11,10 +11,11 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 
+from hf_chat import HuggingFaceChat
+
 from mapcrunch_controller import MapCrunchController
 
 # The "Golden" Prompt (v6): Combines clear mechanics with robust strategic principles.
-
 AGENT_PROMPT_TEMPLATE = """
 **Mission:** You are an expert geo-location agent. Your goal is to find clues to determine your location within a limited number of steps.
 
@@ -68,11 +69,20 @@ class GeoBot:
     ):
         # Initialize model with temperature parameter
         model_kwargs = {
-            "model": model_name,
             "temperature": temperature,
         }
 
-        self.model = model(**model_kwargs)
+        # Handle different model types
+        if model == HuggingFaceChat and HuggingFaceChat is not None:
+            model_kwargs["model"] = model_name
+        else:
+            model_kwargs["model"] = model_name
+
+        try:
+            self.model = model(**model_kwargs)
+        except Exception as e:
+            raise ValueError(f"Failed to initialize model {model_name}: {e}")
+
         self.model_name = model_name
         self.temperature = temperature
         self.use_selenium = use_selenium
@@ -90,6 +100,7 @@ class GeoBot:
     ) -> List[HumanMessage]:
         """Creates a message for the LLM that includes text and a sequence of images."""
         content = [{"type": "text", "text": prompt}]
+
         # Add the JSON format instructions right after the main prompt text
         content.append(
             {
@@ -145,7 +156,6 @@ class GeoBot:
             print(f"\n--- Step {max_steps - step + 1}/{max_steps} ---")
 
             self.controller.setup_clean_environment()
-
             self.controller.label_arrows_on_screen()
 
             screenshot_bytes = self.controller.take_street_view_screenshot()
@@ -178,17 +188,22 @@ class GeoBot:
                 available_actions=json.dumps(available_actions),
             )
 
-            message = self._create_message_with_history(prompt, image_b64_for_prompt)
-            response = self.model.invoke(message)
-
-            decision = self._parse_agent_response(response)
+            try:
+                message = self._create_message_with_history(
+                    prompt, image_b64_for_prompt
+                )
+                response = self.model.invoke(message)
+                decision = self._parse_agent_response(response)
+            except Exception as e:
+                print(f"Error during model invocation: {e}")
+                decision = None
 
             if not decision:
                 print(
-                    "Response parsing failed. Using default recovery action: PAN_RIGHT."
+                    "Response parsing failed or model error. Using default recovery action: PAN_RIGHT."
                 )
                 decision = {
-                    "reasoning": "Recovery due to parsing failure.",
+                    "reasoning": "Recovery due to parsing failure or model error.",
                     "action_details": {"action": "PAN_RIGHT"},
                 }
 
@@ -219,8 +234,13 @@ class GeoBot:
     def analyze_image(self, image: Image.Image) -> Optional[Tuple[float, float]]:
         image_b64 = self.pil_to_base64(image)
         message = self._create_llm_message(BENCHMARK_PROMPT, image_b64)
-        response = self.model.invoke(message)
-        print(f"\nLLM Response:\n{response.content}")
+
+        try:
+            response = self.model.invoke(message)
+            print(f"\nLLM Response:\n{response.content}")
+        except Exception as e:
+            print(f"Error during image analysis: {e}")
+            return None
 
         content = response.content.strip()
         last_line = ""
