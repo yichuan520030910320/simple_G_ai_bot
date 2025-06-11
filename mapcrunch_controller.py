@@ -140,7 +140,6 @@ class MapCrunchController:
     def get_available_actions(self) -> List[str]:
         """
         Checks for movement links via JavaScript.
-        FIXED: Removed PAN_UP and PAN_DOWN as they are not very useful.
         """
         base_actions = ["PAN_LEFT", "PAN_RIGHT", "GUESS"]
         links = self.driver.execute_script("return window.panorama.getLinks();")
@@ -155,7 +154,6 @@ class MapCrunchController:
             pov["heading"] -= degrees
         elif direction == "right":
             pov["heading"] += degrees
-        # UP/DOWN panning logic removed as actions are no longer available.
         self.driver.execute_script("window.panorama.setPov(arguments[0]);", pov)
         time.sleep(0.5)
 
@@ -191,7 +189,6 @@ class MapCrunchController:
             )
             time.sleep(2.5)
 
-    # ... a többi metódus változatlan ...
     def select_map_location_and_guess(self, lat: float, lon: float):
         """Minimalist guess confirmation."""
         self.driver.execute_script(
