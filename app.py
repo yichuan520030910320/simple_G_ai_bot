@@ -52,8 +52,8 @@ def get_model_class(class_name):
 
 
 # UI Setup
-st.set_page_config(page_title="MapCrunch AI Agent", layout="wide")
-st.title("🗺️ MapCrunch AI Agent")
+st.set_page_config(page_title="Omniscient", layout="wide")
+st.title("🗺️ The all-knowing AI that sees everything, knows everything")
 
 # Sidebar
 with st.sidebar:
