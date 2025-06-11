@@ -71,7 +71,7 @@ class GeoBot:
             "model": model_name,
             "temperature": temperature,
         }
-        
+
         self.model = model(**model_kwargs)
         self.model_name = model_name
         self.temperature = temperature
