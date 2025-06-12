@@ -9,7 +9,7 @@ from pathlib import Path
 import math
 
 from geo_bot import GeoBot
-from config import get_data_paths, MODELS_CONFIG, SUCCESS_THRESHOLD_KM
+from config import get_data_paths, MODELS_CONFIG, SUCCESS_THRESHOLD_KM, get_model_class
 
 
 class MapGuesserBenchmark:
@@ -28,25 +28,6 @@ class MapGuesserBenchmark:
                 return json.load(f).get("samples", [])
         except Exception:
             return []
-
-    def get_model_class(self, model_name: str):
-        config = MODELS_CONFIG.get(model_name)
-        if not config:
-            raise ValueError(f"Unknown model: {model_name}")
-        class_name, model_class_name = config["class"], config["model_name"]
-        if class_name == "ChatOpenAI":
-            from langchain_openai import ChatOpenAI
-
-            return ChatOpenAI, model_class_name
-        if class_name == "ChatAnthropic":
-            from langchain_anthropic import ChatAnthropic
-
-            return ChatAnthropic, model_class_name
-        if class_name == "ChatGoogleGenerativeAI":
-            from langchain_google_genai import ChatGoogleGenerativeAI
-
-            return ChatGoogleGenerativeAI, model_class_name
-        raise ValueError(f"Unknown model class: {class_name}")
 
     def calculate_distance(
         self, true_coords: Dict, predicted_coords: Optional[Tuple[float, float]]
@@ -99,7 +80,9 @@ class MapGuesserBenchmark:
         all_results = []
         for model_name in models_to_test:
             print(f"\n🤖 Testing model: {model_name}")
-            model_class, model_class_name = self.get_model_class(model_name)
+            model_config = MODELS_CONFIG[model_name]
+            model_class = get_model_class(model_config["class"])
+            model_class_name = model_config["model_name"]
 
             try:
                 with GeoBot(

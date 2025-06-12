@@ -8,11 +8,8 @@ from pathlib import Path
 
 from geo_bot import GeoBot, AGENT_PROMPT_TEMPLATE
 from benchmark import MapGuesserBenchmark
-from config import MODELS_CONFIG, get_data_paths, SUCCESS_THRESHOLD_KM
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
-from langchain_google_genai import ChatGoogleGenerativeAI
-from hf_chat import HuggingFaceChat
+from config import MODELS_CONFIG, get_data_paths, SUCCESS_THRESHOLD_KM, get_model_class
+
 
 # Simple API key setup
 if "OPENAI_API_KEY" in st.secrets:
@@ -36,19 +33,6 @@ def get_available_datasets():
             if os.path.exists(data_paths["golden_labels"]):
                 datasets.append(dataset_dir.name)
     return datasets if datasets else ["default"]
-
-
-def get_model_class(class_name):
-    if class_name == "ChatOpenAI":
-        return ChatOpenAI
-    elif class_name == "ChatAnthropic":
-        return ChatAnthropic
-    elif class_name == "ChatGoogleGenerativeAI":
-        return ChatGoogleGenerativeAI
-    elif class_name == "HuggingFaceChat":
-        return HuggingFaceChat
-    else:
-        raise ValueError(f"Unknown model class: {class_name}")
 
 
 # UI Setup
