@@ -1,0 +1,309 @@
+{
+  "metadata": {
+    "dataset_name": "example2",
+    "collection_date": "2025-06-12T15:26:27.073898",
+    "collection_options": {}
+  },
+  "samples": [
+    {
+      "id": "e958ec37-0b30-4b30-b508-df614acb489f",
+      "timestamp": "2025-06-12T15:25:22.208434",
+      "lat": 41.52785178236295,
+      "lng": 22.061235302695696,
+      "address": "Unknown",
+      "pano_id": "hB2IrvH7f4iapBJZ_jNMJg",
+      "pov": {
+        "heading": -201.27999999999997,
+        "pitch": 5,
+        "zoom": 1.0000039848465483
+      },
+      "url_slug": "41.527852_22.061235_-201.28_-5.00_0",
+      "thumbnail_path": "e958ec37-0b30-4b30-b508-df614acb489f.jpg"
+    },
+    {
+      "id": "8c047700-2775-4161-bfa5-9c5f966ee929",
+      "timestamp": "2025-06-12T15:25:25.564230",
+      "lat": 35.51112041872643,
+      "lng": 138.76733244706546,
+      "address": "Unknown",
+      "pano_id": "KSCuXhlMyISBw9Poh1hG8w",
+      "pov": {
+        "heading": 61.72000000000003,
+        "pitch": 5,
+        "zoom": 1.0000046104496552
+      },
+      "url_slug": "35.511120_138.767332_61.72_-5.00_0",
+      "thumbnail_path": "8c047700-2775-4161-bfa5-9c5f966ee929.jpg"
+    },
+    {
+      "id": "c0beb43d-e95d-4352-9d36-56aa6c903e7d",
+      "timestamp": "2025-06-12T15:25:28.972905",
+      "lat": 43.42554082467874,
+      "lng": -89.09498316077553,
+      "address": "Unknown",
+      "pano_id": "H3QYXtsn7NBQxjZep7whsQ",
+      "pov": {
+        "heading": 164.72000000000003,
+        "pitch": 5,
+        "zoom": 1.0000093225833766
+      },
+      "url_slug": "43.425541_-89.094983_164.72_-5.00_0",
+      "thumbnail_path": "c0beb43d-e95d-4352-9d36-56aa6c903e7d.jpg"
+    },
+    {
+      "id": "f0af2553-81cf-48a7-8557-ed4b437a0c9d",
+      "timestamp": "2025-06-12T15:25:32.389314",
+      "lat": 47.48390126215672,
+      "lng": 34.659670566007904,
+      "address": "Unknown",
+      "pano_id": "bfFQMztfnvuffg-_9NkXjQ",
+      "pov": {
+        "heading": -337.28,
+        "pitch": 5,
+        "zoom": 1.0000017337781582
+      },
+      "url_slug": "47.483901_34.659671_-337.28_-5.00_0",
+      "thumbnail_path": "f0af2553-81cf-48a7-8557-ed4b437a0c9d.jpg"
+    },
+    {
+      "id": "06c2d9c2-f765-4f2b-b9b1-5b93229dc0fc",
+      "timestamp": "2025-06-12T15:25:35.813919",
+      "lat": -34.63754161327788,
+      "lng": 118.09156096189146,
+      "address": "Unknown",
+      "pano_id": "PzTOFAXRN2xbwgjUqN4bpg",
+      "pov": {
+        "heading": -148.27999999999997,
+        "pitch": 5,
+        "zoom": 1.0000041033706084
+      },
+      "url_slug": "-34.637542_118.091561_-148.28_-5.00_0",
+      "thumbnail_path": "06c2d9c2-f765-4f2b-b9b1-5b93229dc0fc.jpg"
+    },
+    {
+      "id": "92beabfc-c50d-421e-a847-fd2cb145aac8",
+      "timestamp": "2025-06-12T15:25:39.191588",
+      "lat": 64.57213289684468,
+      "lng": -21.97630482318329,
+      "address": "Unknown",
+      "pano_id": "UojsE8YlVZ0N_TsBzTXkHw",
+      "pov": {
+        "heading": 90.72000000000003,
+        "pitch": 5,
+        "zoom": 1.0000091919376193
+      },
+      "url_slug": "64.572133_-21.976305_90.72_-5.00_0",
+      "thumbnail_path": "92beabfc-c50d-421e-a847-fd2cb145aac8.jpg"
+    },
+    {
+      "id": "fae54d62-755c-447f-ace2-7d7d9dcbab0a",
+      "timestamp": "2025-06-12T15:25:42.516009",
+      "lat": 32.34919407912315,
+      "lng": -64.71096298763197,
+      "address": "Unknown",
+      "pano_id": "CAoSF0NJSE0wb2dLRUlDQWdJREV1Tl9YMmdF",
+      "pov": {
+        "heading": 260.72,
+        "pitch": 5,
+        "zoom": 1.0000030548533054
+      },
+      "url_slug": "32.349194_-64.710963_260.72_-5.00_0",
+      "thumbnail_path": "fae54d62-755c-447f-ace2-7d7d9dcbab0a.jpg"
+    },
+    {
+      "id": "a086d72f-5c18-4895-a728-4262d565005f",
+      "timestamp": "2025-06-12T15:25:45.919449",
+      "lat": 34.880191512475136,
+      "lng": 138.1990659116743,
+      "address": "Unknown",
+      "pano_id": "CAoSFkNJSE0wb2dLRUlDQWdJRHE4NDJsWnc.",
+      "pov": {
+        "heading": 358.72,
+        "pitch": 5,
+        "zoom": 1.0000054942816385
+      },
+      "url_slug": "34.880192_138.199066_358.72_-5.00_0",
+      "thumbnail_path": "a086d72f-5c18-4895-a728-4262d565005f.jpg"
+    },
+    {
+      "id": "ea8fae71-8acd-4ba5-a016-3fb9d051c8ff",
+      "timestamp": "2025-06-12T15:25:49.337047",
+      "lat": 22.130721057935787,
+      "lng": 113.57874365739633,
+      "address": "Unknown",
+      "pano_id": "IZjDP8WGT4O3zju2hFiFCg",
+      "pov": {
+        "heading": -249.27999999999997,
+        "pitch": 5,
+        "zoom": 1.0000003495222285
+      },
+      "url_slug": "22.130721_113.578744_-249.28_-5.00_0",
+      "thumbnail_path": "ea8fae71-8acd-4ba5-a016-3fb9d051c8ff.jpg"
+    },
+    {
+      "id": "0730a5f2-a68b-4e7a-9f8d-877bd65b04ba",
+      "timestamp": "2025-06-12T15:25:52.704884",
+      "lat": 18.6634455460649,
+      "lng": -96.76220059003958,
+      "address": "Unknown",
+      "pano_id": "J9ZTNGHVQf4EBW2rCgaHaQ",
+      "pov": {
+        "heading": -5.279999999999973,
+        "pitch": 5,
+        "zoom": 1.0000057047491013
+      },
+      "url_slug": "18.663446_-96.762201_-5.28_-5.00_0",
+      "thumbnail_path": "0730a5f2-a68b-4e7a-9f8d-877bd65b04ba.jpg"
+    },
+    {
+      "id": "992ba13b-0ced-4a8f-b8ee-3e2f9ac14464",
+      "timestamp": "2025-06-12T15:25:56.187109",
+      "lat": 64.51234002155906,
+      "lng": -22.13983357174534,
+      "address": "Unknown",
+      "pano_id": "nayAVqmoufS1IQHDOtXK5g",
+      "pov": {
+        "heading": 204.72000000000003,
+        "pitch": 5,
+        "zoom": 1.0000082656900817
+      },
+      "url_slug": "64.512340_-22.139834_204.72_-5.00_0",
+      "thumbnail_path": "992ba13b-0ced-4a8f-b8ee-3e2f9ac14464.jpg"
+    },
+    {
+      "id": "83f086e9-2b3c-47c8-9611-557853313d73",
+      "timestamp": "2025-06-12T15:25:59.649986",
+      "lat": 49.18855106875811,
+      "lng": 18.715493968155048,
+      "address": "Unknown",
+      "pano_id": "X4_z3fyEkFf1TURoTEtTRw",
+      "pov": {
+        "heading": -285.28,
+        "pitch": 5,
+        "zoom": 1.0000014961409551
+      },
+      "url_slug": "49.188551_18.715494_-285.28_-5.00_0",
+      "thumbnail_path": "83f086e9-2b3c-47c8-9611-557853313d73.jpg"
+    },
+    {
+      "id": "11e0d5df-607f-4673-9075-6cb784949469",
+      "timestamp": "2025-06-12T15:26:03.006109",
+      "lat": 47.566063195512115,
+      "lng": 117.66840235174527,
+      "address": "Unknown",
+      "pano_id": "pmbqMP3wUN-y4UNF29-ijg",
+      "pov": {
+        "heading": -53.27999999999997,
+        "pitch": 5,
+        "zoom": 1.0000074643993226
+      },
+      "url_slug": "47.566063_117.668402_-53.28_-5.00_0",
+      "thumbnail_path": "11e0d5df-607f-4673-9075-6cb784949469.jpg"
+    },
+    {
+      "id": "35aad182-1f46-4ded-a7c0-f41663c1dbc6",
+      "timestamp": "2025-06-12T15:26:06.382239",
+      "lat": 39.85636978265199,
+      "lng": 38.22670052745333,
+      "address": "Unknown",
+      "pano_id": "YX0qC_q239NxWkz2rjYO2A",
+      "pov": {
+        "heading": 194.72000000000003,
+        "pitch": 5,
+        "zoom": 1.0000085095965745
+      },
+      "url_slug": "39.856370_38.226701_194.72_-5.00_0",
+      "thumbnail_path": "35aad182-1f46-4ded-a7c0-f41663c1dbc6.jpg"
+    },
+    {
+      "id": "6668b3fd-eefd-4d25-aa4a-7021a19d19c3",
+      "timestamp": "2025-06-12T15:26:09.783272",
+      "lat": 22.456568266194985,
+      "lng": 114.09923601594565,
+      "address": "Unknown",
+      "pano_id": "DM221xFUpWG9lY53LbL--Q",
+      "pov": {
+        "heading": -355.28,
+        "pitch": 5,
+        "zoom": 1.0000096482864165
+      },
+      "url_slug": "22.456568_114.099236_-355.28_-5.00_0",
+      "thumbnail_path": "6668b3fd-eefd-4d25-aa4a-7021a19d19c3.jpg"
+    },
+    {
+      "id": "2df0138c-dacf-4d89-9f23-9b095226f70f",
+      "timestamp": "2025-06-12T15:26:13.164542",
+      "lat": 38.46383428233303,
+      "lng": 35.16450386289184,
+      "address": "Unknown",
+      "pano_id": "yYdcfT5d7wr1sFM0be7AbQ",
+      "pov": {
+        "heading": -101.27999999999997,
+        "pitch": 5,
+        "zoom": 1.0000053534557005
+      },
+      "url_slug": "38.463834_35.164504_-101.28_-5.00_0",
+      "thumbnail_path": "2df0138c-dacf-4d89-9f23-9b095226f70f.jpg"
+    },
+    {
+      "id": "7a1c2e5a-8cde-4a44-9fdb-5142a26a001d",
+      "timestamp": "2025-06-12T15:26:16.508455",
+      "lat": -6.370108870806767,
+      "lng": -76.28528690259334,
+      "address": "Unknown",
+      "pano_id": "bDGZjPoLOS0J4FaKbCQi3Q",
+      "pov": {
+        "heading": 13.720000000000027,
+        "pitch": 5,
+        "zoom": 1.0000056924769267
+      },
+      "url_slug": "-6.370109_-76.285287_13.72_-5.00_0",
+      "thumbnail_path": "7a1c2e5a-8cde-4a44-9fdb-5142a26a001d.jpg"
+    },
+    {
+      "id": "add1ffdf-22ca-4e15-9061-12d4e4b70638",
+      "timestamp": "2025-06-12T15:26:19.889548",
+      "lat": -31.647905825412163,
+      "lng": -60.705529014729464,
+      "address": "Unknown",
+      "pano_id": "LfewarY8AHpdsRryIvxjVQ",
+      "pov": {
+        "heading": 169.72000000000003,
+        "pitch": 5,
+        "zoom": 1.0000043082285572
+      },
+      "url_slug": "-31.647906_-60.705529_169.72_-5.00_0",
+      "thumbnail_path": "add1ffdf-22ca-4e15-9061-12d4e4b70638.jpg"
+    },
+    {
+      "id": "0c93acf3-75cc-43c1-be9e-28e034c139ff",
+      "timestamp": "2025-06-12T15:26:23.261201",
+      "lat": 43.95405778584408,
+      "lng": 22.298469861096923,
+      "address": "Unknown",
+      "pano_id": "q_NGYfvHdH9mL4cyp3UjEQ",
+      "pov": {
+        "heading": 305.72,
+        "pitch": 5,
+        "zoom": 1.0000030120206056
+      },
+      "url_slug": "43.954058_22.298470_305.72_-5.00_0",
+      "thumbnail_path": "0c93acf3-75cc-43c1-be9e-28e034c139ff.jpg"
+    },
+    {
+      "id": "016d1183-d7a6-46a4-98f2-a97f62445b89",
+      "timestamp": "2025-06-12T15:26:26.696698",
+      "lat": 34.59326187516724,
+      "lng": 135.74317546771286,
+      "address": "Unknown",
+      "pano_id": "iiCKjrr3Zib0M5OYS5BV8g",
+      "pov": {
+        "heading": -279.28,
+        "pitch": 5,
+        "zoom": 1.0000047776936738
+      },
+      "url_slug": "34.593262_135.743175_-279.28_-5.00_0",
+      "thumbnail_path": "016d1183-d7a6-46a4-98f2-a97f62445b89.jpg"
+    }
+  ]
+}

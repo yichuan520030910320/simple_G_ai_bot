@@ -122,7 +122,7 @@ if start_button:
     ) as bot:
         for i, sample in enumerate(test_samples):
             st.divider()
-            st.header(f"Sample {i + 1}/{num_samples} - ID: {sample.get('id', 'N/A')}")
+            st.header(f"Sample {i + 1}/{num_samples}")
 
             # Load the sample location
             bot.controller.load_location_from_data(sample)
