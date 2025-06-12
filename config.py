@@ -48,6 +48,16 @@ MODELS_CONFIG = {
         "model_name": "gemini-1.5-pro-latest",
         "description": "Google Gemini 1.5 Pro",
     },
+    "gemini-2.0-flash-exp": {
+        "class": "ChatGoogleGenerativeAI",
+        "model_name": "gemini-2.0-flash-exp",
+        "description": "Google Gemini 2.0 Flash Exp",
+    },
+"gemini-2.5-pro": {
+        "class": "ChatGoogleGenerativeAI",
+        "model_name": "gemini-2.5-pro-preview-06-05",
+        "description": "Google Gemini 2.5 Pro",
+    },
     "qwen2-vl-7b": {
         "class": "HuggingFaceChat",
         "model_name": "Qwen/Qwen2-VL-7B-Instruct",

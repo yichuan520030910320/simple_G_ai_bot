@@ -15,38 +15,48 @@ from hf_chat import HuggingFaceChat
 
 from mapcrunch_controller import MapCrunchController
 
-# The "Golden" Prompt (v6): Combines clear mechanics with robust strategic principles.
+# The "Golden" Prompt (v7): add more descprtions in context and task
 AGENT_PROMPT_TEMPLATE = """
-**Mission:** You are an expert geo-location agent. Your goal is to find clues to determine your location within a limited number of steps.
+**Mission:** You are an expert geo-location agent. Your goal is to pinpoint our position in as few moves as possible.
 
-**Current Status:**
-- **Remaining Steps: {remaining_steps}**
-- **Available Actions This Turn: {available_actions}**
+**Current Status**
+• Remaining Steps: {remaining_steps}  
+• Actions You Can Take *this* turn: {available_actions}
 
----
-**Core Principles of an Expert Player:**
+────────────────────────────────
+**Core Principles**
 
-1.  **Navigate with Labels:** `MOVE_FORWARD` follows the green 'UP' arrow. `MOVE_BACKWARD` follows the red 'DOWN' arrow. These labels are your most reliable compass. If there are no arrows, you cannot move.
+1.  **Observe → Orient → Act**  
+    Start each turn with a structured three-part reasoning block:  
+    **(1) Visual Clues —** plainly describe what you see (signs, text language, road lines, vegetation, building styles, vehicles, terrain, weather, etc.).  
+    **(2) Potential Regions —** list the most plausible regions/countries those clues suggest.  
+    **(3) Most Probable + Plan —** pick the single likeliest region and explain the next action (move/pan or guess).  
 
-2.  **Efficient Exploration (to avoid "Bulldozer" mode):**
-    - **Pan Before You Move:** At a new location or an intersection, it's often wise to use `PAN_LEFT` or `PAN_RIGHT` to quickly survey your surroundings before committing to a move.
-    - **Don't Get Stuck:** If you've moved forward 2-3 times down a path and found nothing but repetitive scenery (like an empty forest or highway), consider it a barren path. It's smarter to turn around (using `PAN`) and check another direction.
+2.  **Navigate with Labels:**  
+    - `MOVE_FORWARD` follows the green **UP** arrow.  
+    - `MOVE_BACKWARD` follows the red **DOWN** arrow.  
+    - No arrow ⇒ you cannot move that way.
 
-3.  **Be Decisive:** If you find a truly definitive clue (like a full, readable address or a sign with a unique town name), `GUESS` immediately. Don't waste steps.
+3.  **Efficient Exploration:**  
+    - **Pan Before You Move:** At fresh spots/intersections, use `PAN_LEFT` / `PAN_RIGHT` first.  
+    - After ~2 or 3 fruitless moves in repetitive scenery, turn around.
 
-4.  **Final Step Rule:** If `remaining_steps` is **exactly 1**, your action **MUST be `GUESS`**.
+4.  **Be Decisive:** A unique, definitive clue (full address, rare town name, etc.) ⇒ `GUESS` immediately.
 
----
-**Context & Task:**
-Analyze your full journey history and current view, apply the Core Principles, and decide your next action in the required JSON format.
+5.  **Final-Step Rule:** If **Remaining Steps = 1**, you **MUST** `GUESS`.
 
-**Action History:**
+────────────────────────────────
+**Action History**
 {history_text}
 
+────────────────────────────────
+**OUTPUT FORMAT**
+
+Return **one** JSON object wrapped in ```json … ```:
+
 **JSON Output Format:**
-Your response MUST be a valid JSON object wrapped in ```json ... ```.
-- For exploration: `{{"reasoning": "...", "action_details": {{"action": "ACTION_NAME"}} }}`
-- For the final guess: `{{"reasoning": "...", "action_details": {{"action": "GUESS", "lat": <float>, "lon": <float>}} }}`
+Your response MUST be a valid JSON object wrapped in json ... .
+{{"reasoning": "...", "action_details": {{"action": "GUESS", "lat": <float>, "lon": <float>}} }}
 """
 
 BENCHMARK_PROMPT = """
@@ -149,8 +159,100 @@ class GeoBot:
             print(f"Invalid JSON from LLM: {e}\nFull response was:\n{response.content}")
             return None
 
+    def init_history(self) -> List[Dict[str, Any]]:
+        """Initialize an empty history list for agent steps."""
+        return []
+
+    def add_step_to_history(
+        self, 
+        history: List[Dict[str, Any]], 
+        screenshot_b64: str, 
+        decision: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Add a step to the history with proper structure.
+        Returns the step dictionary that was added.
+        """
+        step = {
+            "screenshot_b64": screenshot_b64,
+            "reasoning": decision.get("reasoning", "N/A") if decision else "N/A",
+            "action_details": decision.get("action_details", {"action": "N/A"}) if decision else {"action": "N/A"}
+        }
+        history.append(step)
+        return step
+
+    def generate_history_text(self, history: List[Dict[str, Any]]) -> str:
+        """Generate formatted history text for prompt."""
+        if not history:
+            return "No history yet. This is the first step."
+        
+        history_text = ""
+        for i, h in enumerate(history):
+            history_text += f"--- History Step {i + 1} ---\n"
+            history_text += f"Reasoning: {h.get('reasoning', 'N/A')}\n"
+            history_text += f"Action: {h.get('action_details', {}).get('action', 'N/A')}\n\n"
+        return history_text
+
+    def get_history_images(self, history: List[Dict[str, Any]]) -> List[str]:
+        """Extract image base64 strings from history."""
+        return [h["screenshot_b64"] for h in history]
+
+    def execute_agent_step(
+        self, 
+        history: List[Dict[str, Any]], 
+        remaining_steps: int,
+        current_screenshot_b64: str,
+        available_actions: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Execute a single agent step: generate prompt, get AI decision, return decision.
+        This is the core step logic extracted for reuse.
+        """
+        history_text = self.generate_history_text(history)
+        image_b64_for_prompt = self.get_history_images(history) + [current_screenshot_b64]
+
+        prompt = AGENT_PROMPT_TEMPLATE.format(
+            remaining_steps=remaining_steps,
+            history_text=history_text,
+            available_actions=json.dumps(available_actions),
+        )
+
+        try:
+            message = self._create_message_with_history(prompt, image_b64_for_prompt[-1:])
+            response = self.model.invoke(message)
+            decision = self._parse_agent_response(response)
+        except Exception as e:
+            print(f"Error during model invocation: {e}")
+            decision = None
+
+        if not decision:
+            print("Response parsing failed or model error. Using default recovery action: PAN_RIGHT.")
+            decision = {
+                "reasoning": "Recovery due to parsing failure or model error.",
+                "action_details": {"action": "PAN_RIGHT"},
+            }
+
+        return decision
+
+    def execute_action(self, action: str) -> bool:
+        """
+        Execute the given action using the controller.
+        Returns True if action was executed, False if it was GUESS.
+        """
+        if action == "GUESS":
+            return False
+        elif action == "MOVE_FORWARD":
+            self.controller.move("forward")
+        elif action == "MOVE_BACKWARD":
+            self.controller.move("backward")
+        elif action == "PAN_LEFT":
+            self.controller.pan_view("left")
+        elif action == "PAN_RIGHT":
+            self.controller.pan_view("right")
+        return True
+
     def run_agent_loop(self, max_steps: int = 10) -> Optional[Tuple[float, float]]:
-        history: List[Dict[str, Any]] = []
+        history = self.init_history()
 
         for step in range(max_steps, 0, -1):
             print(f"\n--- Step {max_steps - step + 1}/{max_steps} ---")
@@ -169,46 +271,13 @@ class GeoBot:
             available_actions = self.controller.get_available_actions()
             print(f"Available actions: {available_actions}")
 
-            history_text: str = ""
-            image_b64_for_prompt: List[str] = []
-            if not history:
-                history_text = "No history yet. This is the first step."
-            else:
-                for i, h in enumerate(history):
-                    history_text += f"--- History Step {i + 1} ---\n"
-                    history_text += f"Reasoning: {h.get('reasoning', 'N/A')}\n"
-                    history_text += f"Action: {h.get('action_details', {}).get('action', 'N/A')}\n\n"
-                    image_b64_for_prompt.append(h["screenshot_b64"])
-
-            image_b64_for_prompt.append(current_screenshot_b64)
-
-            prompt = AGENT_PROMPT_TEMPLATE.format(
-                remaining_steps=step,
-                history_text=history_text,
-                available_actions=json.dumps(available_actions),
+            # Use the extracted step execution method
+            decision = self.execute_agent_step(
+                history, step, current_screenshot_b64, available_actions
             )
 
-            try:
-                message = self._create_message_with_history(
-                    prompt, image_b64_for_prompt
-                )
-                response = self.model.invoke(message)
-                decision = self._parse_agent_response(response)
-            except Exception as e:
-                print(f"Error during model invocation: {e}")
-                decision = None
-
-            if not decision:
-                print(
-                    "Response parsing failed or model error. Using default recovery action: PAN_RIGHT."
-                )
-                decision = {
-                    "reasoning": "Recovery due to parsing failure or model error.",
-                    "action_details": {"action": "PAN_RIGHT"},
-                }
-
-            decision["screenshot_b64"] = current_screenshot_b64
-            history.append(decision)
+            # Add step to history
+            self.add_step_to_history(history, current_screenshot_b64, decision)
 
             action_details = decision.get("action_details", {})
             action = action_details.get("action")
@@ -219,14 +288,8 @@ class GeoBot:
                 lat, lon = action_details.get("lat"), action_details.get("lon")
                 if lat is not None and lon is not None:
                     return lat, lon
-            elif action == "MOVE_FORWARD":
-                self.controller.move("forward")
-            elif action == "MOVE_BACKWARD":
-                self.controller.move("backward")
-            elif action == "PAN_LEFT":
-                self.controller.pan_view("left")
-            elif action == "PAN_RIGHT":
-                self.controller.pan_view("right")
+            else:
+                self.execute_action(action)
 
         print("Max steps reached. Agent did not make a final guess.")
         return None

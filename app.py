@@ -60,16 +60,33 @@ st.markdown("### *The all-knowing AI that sees everything, knows everything*")
 with st.sidebar:
     st.header("Configuration")
 
-    dataset_choice = st.selectbox("Dataset", get_available_datasets())
+    # Get available datasets and ensure we have a valid default
+    available_datasets = get_available_datasets()
+    default_dataset = available_datasets[0] if available_datasets else "default"
+    
+    dataset_choice = st.selectbox("Dataset", available_datasets, index=0)
     model_choice = st.selectbox("Model", list(MODELS_CONFIG.keys()))
     steps_per_sample = st.slider("Max Steps", 3, 20, 10)
 
-    # Load dataset
+    # Load dataset with error handling
     data_paths = get_data_paths(dataset_choice)
-    with open(data_paths["golden_labels"], "r") as f:
-        golden_labels = json.load(f).get("samples", [])
+    try:
+        with open(data_paths["golden_labels"], "r") as f:
+            golden_labels = json.load(f).get("samples", [])
+        
+        st.info(f"Dataset '{dataset_choice}' has {len(golden_labels)} samples")
+        if len(golden_labels) == 0:
+            st.error(f"Dataset '{dataset_choice}' contains no samples!")
+            st.stop()
+            
+    except FileNotFoundError:
+        st.error(f"❌ Dataset '{dataset_choice}' not found at {data_paths['golden_labels']}")
+        st.info("💡 Available datasets: " + ", ".join(available_datasets))
+        st.stop()
+    except Exception as e:
+        st.error(f"❌ Error loading dataset '{dataset_choice}': {str(e)}")
+        st.stop()
 
-    st.info(f"Dataset has {len(golden_labels)} samples")
     num_samples = st.slider(
         "Samples to Test", 1, len(golden_labels), min(3, len(golden_labels))
     )
@@ -102,7 +119,7 @@ if start_button:
 
             with sample_container:
                 # Initialize step tracking
-                history = []
+                history = bot.init_history()
                 final_guess = None
 
                 for step in range(steps_per_sample):
@@ -126,35 +143,19 @@ if start_button:
                             )
 
                         with col2:
-                            # Build history for AI
-                            current_step = {
-                                "image_b64": bot.pil_to_base64(
-                                    Image.open(BytesIO(screenshot_bytes))
-                                ),
-                                "action": "N/A",
-                            }
-                            history.append(current_step)
-
+                            # Get current screenshot as base64
+                            current_screenshot_b64 = bot.pil_to_base64(
+                                Image.open(BytesIO(screenshot_bytes))
+                            )
+                            
                             available_actions = bot.controller.get_available_actions()
-                            history_text = "\n".join(
-                                [
-                                    f"Step {j + 1}: {h['action']}"
-                                    for j, h in enumerate(history[:-1])
-                                ]
-                            )
-                            if not history_text:
-                                history_text = "First step."
-
-                            prompt = AGENT_PROMPT_TEMPLATE.format(
-                                remaining_steps=steps_per_sample - step,
-                                history_text=history_text,
-                                available_actions=json.dumps(available_actions),
-                            )
 
                             # Show AI context
                             st.write("**Available Actions:**")
                             st.code(json.dumps(available_actions, indent=2))
 
+                            # Generate and display history
+                            history_text = bot.generate_history_text(history)
                             st.write("**AI Context:**")
                             st.text_area(
                                 "History",
@@ -168,21 +169,22 @@ if start_button:
                             if step_num == steps_per_sample:
                                 action = "GUESS"
                                 st.warning("Max steps reached. Forcing GUESS.")
+                                # Create a forced decision for consistency
+                                decision = {
+                                    "reasoning": "Maximum steps reached, forcing final guess with fallback coordinates.",
+                                    "action_details": {"action": "GUESS", "lat": 0.0, "lon": 0.0}
+                                }
                             else:
-                                # Get AI response
-                                message = bot._create_message_with_history(
-                                    prompt, [h["image_b64"] for h in history]
+                                # Use the bot's agent step execution
+                                remaining_steps = steps_per_sample - step
+                                decision = bot.execute_agent_step(
+                                    history, remaining_steps, current_screenshot_b64, available_actions
                                 )
-                                response = bot.model.invoke(message)
-                                decision = bot._parse_agent_response(response)
 
                                 if decision is None:
-                                    raise ValueError(
-                                        f"Failed to parse AI response: {response.content}"
-                                    )
+                                    raise ValueError("Failed to get AI decision")
 
                                 action = decision["action_details"]["action"]
-                                history[-1]["action"] = action
 
                                 # Show AI decision
                                 st.write("**AI Reasoning:**")
@@ -191,9 +193,12 @@ if start_button:
                                 st.write("**AI Action:**")
                                 st.success(f"`{action}`")
 
-                                # Show raw response
-                                with st.expander("Raw AI Response"):
-                                    st.text(response.content)
+                                # Show raw response for debugging
+                                with st.expander("Decision Details"):
+                                    st.json(decision)
+
+                            # Add step to history using the bot's method
+                            bot.add_step_to_history(history, current_screenshot_b64, decision)
 
                         # Execute action
                         if action == "GUESS":
@@ -209,14 +214,9 @@ if start_button:
                                 final_guess = (lat, lon)
                                 st.success(f"Final Guess: {lat:.4f}, {lon:.4f}")
                             break
-                        elif action == "MOVE_FORWARD":
-                            bot.controller.move("forward")
-                        elif action == "MOVE_BACKWARD":
-                            bot.controller.move("backward")
-                        elif action == "PAN_LEFT":
-                            bot.controller.pan_view("left")
-                        elif action == "PAN_RIGHT":
-                            bot.controller.pan_view("right")
+                        else:
+                            # Use bot's execute_action method
+                            bot.execute_action(action)
 
                         # Auto scroll to bottom
                         st.empty()  # Force refresh to show latest content
