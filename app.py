@@ -156,7 +156,7 @@ if start_button:
                             st.image(
                                 step_info["screenshot_bytes"],
                                 caption=f"What AI sees - Step {step_num}",
-                                use_container_width=True,
+                                use_column_width=True,
                             )
 
                         with col2:
