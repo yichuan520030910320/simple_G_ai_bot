@@ -26,6 +26,10 @@ BENCHMARK_CONFIG = {
 # MapCrunch options
 MAPCRUNCH_OPTIONS = {}
 
+# Default settings
+DEFAULT_MODEL = "gemini-2.5-pro"
+DEFAULT_TEMPERATURE = 1.0
+
 # Model configurations
 MODELS_CONFIG = {
     "gpt-4o": {
@@ -70,7 +74,6 @@ MODELS_CONFIG = {
     },
 }
 
-
 # Data paths - now supports named datasets
 def get_data_paths(dataset_name: str = "default"):
     """Get data paths for a specific dataset"""
@@ -79,7 +82,6 @@ def get_data_paths(dataset_name: str = "default"):
         "thumbnails": f"datasets/{dataset_name}/thumbnails/",
         "results": f"results/{dataset_name}/",
     }
-
 
 # Backward compatibility - default paths
 DATA_PATHS = get_data_paths("default")

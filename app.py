@@ -8,7 +8,7 @@ from pathlib import Path
 
 from geo_bot import GeoBot, AGENT_PROMPT_TEMPLATE
 from benchmark import MapGuesserBenchmark
-from config import MODELS_CONFIG, get_data_paths, SUCCESS_THRESHOLD_KM
+from config import MODELS_CONFIG, get_data_paths, SUCCESS_THRESHOLD_KM, DEFAULT_MODEL, DEFAULT_TEMPERATURE
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -65,13 +65,13 @@ with st.sidebar:
     default_dataset = available_datasets[0] if available_datasets else "default"
 
     dataset_choice = st.selectbox("Dataset", available_datasets, index=0)
-    model_choice = st.selectbox("Model", list(MODELS_CONFIG.keys()))
+    model_choice = st.selectbox("Model", list(MODELS_CONFIG.keys()), index=list(MODELS_CONFIG.keys()).index(DEFAULT_MODEL))
     steps_per_sample = st.slider("Max Steps", 3, 20, 10)
     temperature = st.slider(
         "Temperature",
         0.0,
         2.0,
-        0.0,
+        DEFAULT_TEMPERATURE,
         0.1,
         help="Controls randomness in AI responses. 0.0 = deterministic, higher = more creative",
     )
