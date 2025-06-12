@@ -67,6 +67,7 @@ with st.sidebar:
     dataset_choice = st.selectbox("Dataset", available_datasets, index=0)
     model_choice = st.selectbox("Model", list(MODELS_CONFIG.keys()))
     steps_per_sample = st.slider("Max Steps", 3, 20, 10)
+    temperature = st.slider("Temperature", 0.0, 2.0, 0.0, 0.1, help="Controls randomness in AI responses. 0.0 = deterministic, higher = more creative")
 
     # Load dataset with error handling
     data_paths = get_data_paths(dataset_choice)
@@ -105,7 +106,7 @@ if start_button:
     progress_bar = st.progress(0)
 
     with GeoBot(
-        model=model_class, model_name=config["model_name"], headless=True
+        model=model_class, model_name=config["model_name"], headless=True, temperature=temperature
     ) as bot:
         for i, sample in enumerate(test_samples):
             st.divider()
