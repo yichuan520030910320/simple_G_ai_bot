@@ -43,20 +43,20 @@ AGENT_PROMPT_TEMPLATE = """
 
 4.  **Be Decisive:** A unique, definitive clue (full address, rare town name, etc.) ⇒ `GUESS` immediately.
 
-5.  **Final-Step Rule:** If **Remaining Steps = 1**, you **MUST** `GUESS`.
+5.  **Final-Step Rule:** If **Remaining Steps = 1**, you **MUST** `GUESS` and you should carefully check the image and the surroundings.
 
 ────────────────────────────────
+**Context & Task:**
+Analyze your full journey history and current view, apply the Core Principles, and decide your next action in the required JSON format.
+
 **Action History**
 {history_text}
 
 ────────────────────────────────
-**OUTPUT FORMAT**
-
-Return **one** JSON object wrapped in ```json … ```:
-
-**JSON Output Format:**
-Your response MUST be a valid JSON object wrapped in json ... .
-{{"reasoning": "...", "action_details": {{"action": "GUESS", "lat": <float>, "lon": <float>}} }}
+**JSON Output Format:**More actions
+Your response MUST be a valid JSON object wrapped in ```json ... ```.
+- For exploration: `{{"reasoning": "...", "action_details": {{"action": "ACTION_NAME"}} }}`
+- For the final guess: `{{"reasoning": "...", "action_details": {{"action": "GUESS", "lat": <float>, "lon": <float>}} }}`
 """
 
 BENCHMARK_PROMPT = """

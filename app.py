@@ -66,7 +66,7 @@ with st.sidebar:
 
     dataset_choice = st.selectbox("Dataset", available_datasets, index=0)
     model_choice = st.selectbox("Model", list(MODELS_CONFIG.keys()), index=list(MODELS_CONFIG.keys()).index(DEFAULT_MODEL))
-    steps_per_sample = st.slider("Max Steps", 3, 20, 10)
+    steps_per_sample = st.slider("Max Steps", 1, 20, 10)
     temperature = st.slider(
         "Temperature",
         0.0,
