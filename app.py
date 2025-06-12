@@ -114,6 +114,7 @@ if start_button:
 
             bot.controller.load_location_from_data(sample)
             bot.controller.setup_clean_environment()
+            
 
             # Create scrollable container for this sample
             sample_container = st.container()
@@ -131,6 +132,8 @@ if start_button:
                         st.subheader(f"Step {step_num}/{steps_per_sample}")
 
                         # Take screenshot and show
+                        bot.controller.setup_clean_environment()
+
                         bot.controller.label_arrows_on_screen()
                         screenshot_bytes = bot.controller.take_street_view_screenshot()
 
