@@ -164,10 +164,10 @@ class GeoBot:
         return []
 
     def add_step_to_history(
-        self, 
-        history: List[Dict[str, Any]], 
-        screenshot_b64: str, 
-        decision: Optional[Dict[str, Any]] = None
+        self,
+        history: List[Dict[str, Any]],
+        screenshot_b64: str,
+        decision: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Add a step to the history with proper structure.
@@ -176,7 +176,9 @@ class GeoBot:
         step = {
             "screenshot_b64": screenshot_b64,
             "reasoning": decision.get("reasoning", "N/A") if decision else "N/A",
-            "action_details": decision.get("action_details", {"action": "N/A"}) if decision else {"action": "N/A"}
+            "action_details": decision.get("action_details", {"action": "N/A"})
+            if decision
+            else {"action": "N/A"},
         }
         history.append(step)
         return step
@@ -185,12 +187,14 @@ class GeoBot:
         """Generate formatted history text for prompt."""
         if not history:
             return "No history yet. This is the first step."
-        
+
         history_text = ""
         for i, h in enumerate(history):
             history_text += f"--- History Step {i + 1} ---\n"
             history_text += f"Reasoning: {h.get('reasoning', 'N/A')}\n"
-            history_text += f"Action: {h.get('action_details', {}).get('action', 'N/A')}\n\n"
+            history_text += (
+                f"Action: {h.get('action_details', {}).get('action', 'N/A')}\n\n"
+            )
         return history_text
 
     def get_history_images(self, history: List[Dict[str, Any]]) -> List[str]:
@@ -198,18 +202,20 @@ class GeoBot:
         return [h["screenshot_b64"] for h in history]
 
     def execute_agent_step(
-        self, 
-        history: List[Dict[str, Any]], 
+        self,
+        history: List[Dict[str, Any]],
         remaining_steps: int,
         current_screenshot_b64: str,
-        available_actions: Dict[str, Any]
+        available_actions: Dict[str, Any],
     ) -> Optional[Dict[str, Any]]:
         """
         Execute a single agent step: generate prompt, get AI decision, return decision.
         This is the core step logic extracted for reuse.
         """
         history_text = self.generate_history_text(history)
-        image_b64_for_prompt = self.get_history_images(history) + [current_screenshot_b64]
+        image_b64_for_prompt = self.get_history_images(history) + [
+            current_screenshot_b64
+        ]
 
         prompt = AGENT_PROMPT_TEMPLATE.format(
             remaining_steps=remaining_steps,
@@ -218,7 +224,9 @@ class GeoBot:
         )
 
         try:
-            message = self._create_message_with_history(prompt, image_b64_for_prompt[-1:])
+            message = self._create_message_with_history(
+                prompt, image_b64_for_prompt[-1:]
+            )
             response = self.model.invoke(message)
             decision = self._parse_agent_response(response)
         except Exception as e:
@@ -226,7 +234,9 @@ class GeoBot:
             decision = None
 
         if not decision:
-            print("Response parsing failed or model error. Using default recovery action: PAN_RIGHT.")
+            print(
+                "Response parsing failed or model error. Using default recovery action: PAN_RIGHT."
+            )
             decision = {
                 "reasoning": "Recovery due to parsing failure or model error.",
                 "action_details": {"action": "PAN_RIGHT"},
@@ -251,12 +261,27 @@ class GeoBot:
             self.controller.pan_view("right")
         return True
 
-    def run_agent_loop(self, max_steps: int = 10) -> Optional[Tuple[float, float]]:
+    def run_agent_loop(
+        self, max_steps: int = 10, step_callback=None
+    ) -> Optional[Tuple[float, float]]:
+        """
+        Enhanced agent loop that calls a callback function after each step for UI updates.
+
+        Args:
+            max_steps: Maximum number of steps to take
+            step_callback: Function called after each step with step info
+                        Signature: callback(step_info: dict) -> None
+
+        Returns:
+            Final guess coordinates (lat, lon) or None if no guess made
+        """
         history = self.init_history()
 
         for step in range(max_steps, 0, -1):
-            print(f"\n--- Step {max_steps - step + 1}/{max_steps} ---")
+            step_num = max_steps - step + 1
+            print(f"\n--- Step {step_num}/{max_steps} ---")
 
+            # Setup and screenshot
             self.controller.setup_clean_environment()
             self.controller.label_arrows_on_screen()
 
@@ -271,23 +296,70 @@ class GeoBot:
             available_actions = self.controller.get_available_actions()
             print(f"Available actions: {available_actions}")
 
-            # Use the extracted step execution method
-            decision = self.execute_agent_step(
-                history, step, current_screenshot_b64, available_actions
-            )
+            # Force guess on final step or get AI decision
+            if step == 1:  # Final step
+                # Force a guess with fallback logic
+                decision = {
+                    "reasoning": "Maximum steps reached, forcing final guess.",
+                    "action_details": {"action": "GUESS", "lat": 0.0, "lon": 0.0},
+                }
+                # Try to get a real guess from AI
+                try:
+                    ai_decision = self.execute_agent_step(
+                        history, step, current_screenshot_b64, available_actions
+                    )
+                    if (
+                        ai_decision
+                        and ai_decision.get("action_details", {}).get("action")
+                        == "GUESS"
+                    ):
+                        decision = ai_decision
+                except:
+                    pass  # Use fallback
+            else:
+                # Normal step execution
+                decision = self.execute_agent_step(
+                    history, step, current_screenshot_b64, available_actions
+                )
 
-            # Add step to history
-            self.add_step_to_history(history, current_screenshot_b64, decision)
+            # Create step_info with current history BEFORE adding current step
+            # This shows the history up to (but not including) the current step
+            step_info = {
+                "step_num": step_num,
+                "max_steps": max_steps,
+                "remaining_steps": step,
+                "screenshot_bytes": screenshot_bytes,
+                "screenshot_b64": current_screenshot_b64,
+                "available_actions": available_actions,
+                "is_final_step": step == 1,
+                "reasoning": decision.get("reasoning", "N/A"),
+                "action_details": decision.get("action_details", {"action": "N/A"}),
+                "history": history.copy(),  # History up to current step (excluding current)
+            }
 
             action_details = decision.get("action_details", {})
             action = action_details.get("action")
             print(f"AI Reasoning: {decision.get('reasoning', 'N/A')}")
             print(f"AI Action: {action}")
 
+            # Call UI callback before executing action
+            if step_callback:
+                try:
+                    step_callback(step_info)
+                except Exception as e:
+                    print(f"Warning: UI callback failed: {e}")
+
+            # Add step to history AFTER callback (so next iteration has this step in history)
+            self.add_step_to_history(history, current_screenshot_b64, decision)
+
+            # Execute action
             if action == "GUESS":
                 lat, lon = action_details.get("lat"), action_details.get("lon")
                 if lat is not None and lon is not None:
                     return lat, lon
+                else:
+                    print("Invalid guess coordinates, using fallback")
+                    return 0.0, 0.0  # Fallback coordinates
             else:
                 self.execute_action(action)
 

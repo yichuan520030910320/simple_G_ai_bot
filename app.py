@@ -63,25 +63,34 @@ with st.sidebar:
     # Get available datasets and ensure we have a valid default
     available_datasets = get_available_datasets()
     default_dataset = available_datasets[0] if available_datasets else "default"
-    
+
     dataset_choice = st.selectbox("Dataset", available_datasets, index=0)
     model_choice = st.selectbox("Model", list(MODELS_CONFIG.keys()))
     steps_per_sample = st.slider("Max Steps", 3, 20, 10)
-    temperature = st.slider("Temperature", 0.0, 2.0, 0.0, 0.1, help="Controls randomness in AI responses. 0.0 = deterministic, higher = more creative")
+    temperature = st.slider(
+        "Temperature",
+        0.0,
+        2.0,
+        0.0,
+        0.1,
+        help="Controls randomness in AI responses. 0.0 = deterministic, higher = more creative",
+    )
 
     # Load dataset with error handling
     data_paths = get_data_paths(dataset_choice)
     try:
         with open(data_paths["golden_labels"], "r") as f:
             golden_labels = json.load(f).get("samples", [])
-        
+
         st.info(f"Dataset '{dataset_choice}' has {len(golden_labels)} samples")
         if len(golden_labels) == 0:
             st.error(f"Dataset '{dataset_choice}' contains no samples!")
             st.stop()
-            
+
     except FileNotFoundError:
-        st.error(f"❌ Dataset '{dataset_choice}' not found at {data_paths['golden_labels']}")
+        st.error(
+            f"❌ Dataset '{dataset_choice}' not found at {data_paths['golden_labels']}"
+        )
         st.info("💡 Available datasets: " + ", ".join(available_datasets))
         st.stop()
     except Exception as e:
@@ -106,127 +115,111 @@ if start_button:
     progress_bar = st.progress(0)
 
     with GeoBot(
-        model=model_class, model_name=config["model_name"], headless=True, temperature=temperature
+        model=model_class,
+        model_name=config["model_name"],
+        headless=True,
+        temperature=temperature,
     ) as bot:
         for i, sample in enumerate(test_samples):
             st.divider()
             st.header(f"Sample {i + 1}/{num_samples} - ID: {sample.get('id', 'N/A')}")
 
+            # Load the sample location
             bot.controller.load_location_from_data(sample)
-            bot.controller.setup_clean_environment()
-            
 
-            # Create scrollable container for this sample
+            # Create containers for UI updates
             sample_container = st.container()
 
-            with sample_container:
-                # Initialize step tracking
-                history = bot.init_history()
-                final_guess = None
+            # Initialize UI state for this sample
+            step_containers = {}
+            sample_steps_data = []
 
-                for step in range(steps_per_sample):
-                    step_num = step + 1
+            def ui_step_callback(step_info):
+                """Callback function to update UI after each step"""
+                step_num = step_info["step_num"]
 
-                    # Create step container
-                    with st.container():
-                        st.subheader(f"Step {step_num}/{steps_per_sample}")
+                # Store step data
+                sample_steps_data.append(step_info)
 
-                        # Take screenshot and show
-                        bot.controller.setup_clean_environment()
+                with sample_container:
+                    # Create step container if it doesn't exist
+                    if step_num not in step_containers:
+                        step_containers[step_num] = st.container()
 
-                        bot.controller.label_arrows_on_screen()
-                        screenshot_bytes = bot.controller.take_street_view_screenshot()
+                    with step_containers[step_num]:
+                        st.subheader(f"Step {step_num}/{step_info['max_steps']}")
 
                         col1, col2 = st.columns([1, 2])
 
                         with col1:
+                            # Display screenshot
                             st.image(
-                                screenshot_bytes,
-                                caption=f"What AI sees",
-                                use_column_width=True,
+                                step_info["screenshot_bytes"],
+                                caption=f"What AI sees - Step {step_num}",
+                                use_container_width=True,
                             )
 
                         with col2:
-                            # Get current screenshot as base64
-                            current_screenshot_b64 = bot.pil_to_base64(
-                                Image.open(BytesIO(screenshot_bytes))
-                            )
-                            
-                            available_actions = bot.controller.get_available_actions()
-
-                            # Show AI context
+                            # Show available actions
                             st.write("**Available Actions:**")
-                            st.code(json.dumps(available_actions, indent=2))
+                            st.code(
+                                json.dumps(step_info["available_actions"], indent=2)
+                            )
 
-                            # Generate and display history
-                            history_text = bot.generate_history_text(history)
+                            # Show history context - use the history from step_info
+                            current_history = step_info.get("history", [])
+                            history_text = bot.generate_history_text(current_history)
                             st.write("**AI Context:**")
                             st.text_area(
                                 "History",
                                 history_text,
                                 height=100,
                                 disabled=True,
-                                key=f"history_{i}_{step}",
+                                key=f"history_{i}_{step_num}",
                             )
 
-                            # Force guess on last step or get AI decision
-                            if step_num == steps_per_sample:
-                                action = "GUESS"
+                            # Show AI reasoning and action
+                            action = step_info.get("action_details", {}).get(
+                                "action", "N/A"
+                            )
+
+                            if step_info.get("is_final_step") and action != "GUESS":
                                 st.warning("Max steps reached. Forcing GUESS.")
-                                # Create a forced decision for consistency
-                                decision = {
-                                    "reasoning": "Maximum steps reached, forcing final guess with fallback coordinates.",
-                                    "action_details": {"action": "GUESS", "lat": 0.0, "lon": 0.0}
-                                }
+
+                            st.write("**AI Reasoning:**")
+                            st.info(step_info.get("reasoning", "N/A"))
+
+                            st.write("**AI Action:**")
+                            if action == "GUESS":
+                                lat = step_info.get("action_details", {}).get("lat")
+                                lon = step_info.get("action_details", {}).get("lon")
+                                st.success(f"`{action}` - {lat:.4f}, {lon:.4f}")
                             else:
-                                # Use the bot's agent step execution
-                                remaining_steps = steps_per_sample - step
-                                decision = bot.execute_agent_step(
-                                    history, remaining_steps, current_screenshot_b64, available_actions
-                                )
-
-                                if decision is None:
-                                    raise ValueError("Failed to get AI decision")
-
-                                action = decision["action_details"]["action"]
-
-                                # Show AI decision
-                                st.write("**AI Reasoning:**")
-                                st.info(decision.get("reasoning", "N/A"))
-
-                                st.write("**AI Action:**")
                                 st.success(f"`{action}`")
 
-                                # Show raw response for debugging
-                                with st.expander("Decision Details"):
-                                    st.json(decision)
+                            # Show decision details for debugging
+                            with st.expander("Decision Details"):
+                                decision_data = {
+                                    "reasoning": step_info.get("reasoning"),
+                                    "action_details": step_info.get("action_details"),
+                                    "remaining_steps": step_info.get("remaining_steps"),
+                                }
+                                st.json(decision_data)
 
-                            # Add step to history using the bot's method
-                            bot.add_step_to_history(history, current_screenshot_b64, decision)
+                # Force UI refresh
+                time.sleep(0.5)  # Small delay to ensure UI updates are visible
 
-                        # Execute action
-                        if action == "GUESS":
-                            if step_num == steps_per_sample:
-                                # Forced guess - use fallback coordinates
-                                lat, lon = 0.0, 0.0
-                                st.error("Forced guess with fallback coordinates")
-                            else:
-                                lat = decision.get("action_details", {}).get("lat")
-                                lon = decision.get("action_details", {}).get("lon")
+            # Run the agent loop with UI callback
+            try:
+                final_guess = bot.run_agent_loop(
+                    max_steps=steps_per_sample, step_callback=ui_step_callback
+                )
+            except Exception as e:
+                st.error(f"Error during agent execution: {e}")
+                final_guess = None
 
-                            if lat is not None and lon is not None:
-                                final_guess = (lat, lon)
-                                st.success(f"Final Guess: {lat:.4f}, {lon:.4f}")
-                            break
-                        else:
-                            # Use bot's execute_action method
-                            bot.execute_action(action)
-
-                        # Auto scroll to bottom
-                        st.empty()  # Force refresh to show latest content
-                        time.sleep(1)
-
-                # Sample Results
+            # Sample Results
+            with sample_container:
                 st.subheader("Sample Result")
                 true_coords = {"lat": sample.get("lat"), "lng": sample.get("lng")}
                 distance_km = None
@@ -259,6 +252,9 @@ if start_button:
                     {
                         "sample_id": sample.get("id"),
                         "model": model_choice,
+                        "steps_taken": len(sample_steps_data),
+                        "max_steps": steps_per_sample,
+                        "temperature": temperature,
                         "true_coordinates": true_coords,
                         "predicted_coordinates": final_guess,
                         "distance_km": distance_km,
@@ -272,31 +268,41 @@ if start_button:
     st.divider()
     st.header("🏁 Final Results")
 
-    summary = benchmark_helper.generate_summary(all_results)
-    if summary and model_choice in summary:
-        stats = summary[model_choice]
+    # Calculate summary stats
+    successes = [r for r in all_results if r["success"]]
+    success_rate = len(successes) / len(all_results) if all_results else 0
 
-        # Overall metrics
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Success Rate", f"{stats.get('success_rate', 0) * 100:.1f}%")
-        col2.metric("Average Distance", f"{stats.get('average_distance_km', 0):.1f} km")
-        col3.metric("Total Samples", len(all_results))
+    valid_distances = [
+        r["distance_km"] for r in all_results if r["distance_km"] is not None
+    ]
+    avg_distance = sum(valid_distances) / len(valid_distances) if valid_distances else 0
 
-        # Detailed results table
-        st.subheader("Detailed Results")
-        st.dataframe(all_results, use_container_width=True)
+    # Overall metrics
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Success Rate", f"{success_rate * 100:.1f}%")
+    col2.metric("Average Distance", f"{avg_distance:.1f} km")
+    col3.metric("Total Samples", len(all_results))
 
-        # Success breakdown
-        successes = [r for r in all_results if r["success"]]
-        failures = [r for r in all_results if not r["success"]]
+    # Detailed results table
+    st.subheader("Detailed Results")
+    st.dataframe(all_results, use_container_width=True)
 
-        if successes:
-            st.subheader("Successful Samples")
-            st.dataframe(successes, use_container_width=True)
+    # Success/failure breakdown
+    if successes:
+        st.subheader("✅ Successful Samples")
+        st.dataframe(successes, use_container_width=True)
 
-        if failures:
-            st.subheader("Failed Samples")
-            st.dataframe(failures, use_container_width=True)
-    else:
-        st.error("Could not generate summary")
-        st.dataframe(all_results, use_container_width=True)
+    failures = [r for r in all_results if not r["success"]]
+    if failures:
+        st.subheader("❌ Failed Samples")
+        st.dataframe(failures, use_container_width=True)
+
+    # Export functionality
+    if st.button("💾 Export Results"):
+        results_json = json.dumps(all_results, indent=2)
+        st.download_button(
+            label="Download results.json",
+            data=results_json,
+            file_name=f"geo_results_{dataset_choice}_{model_choice}_{num_samples}samples.json",
+            mime="application/json",
+        )

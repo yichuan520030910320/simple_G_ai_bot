@@ -53,7 +53,7 @@ MODELS_CONFIG = {
         "model_name": "gemini-2.0-flash-exp",
         "description": "Google Gemini 2.0 Flash Exp",
     },
-"gemini-2.5-pro": {
+    "gemini-2.5-pro": {
         "class": "ChatGoogleGenerativeAI",
         "model_name": "gemini-2.5-pro-preview-06-05",
         "description": "Google Gemini 2.5 Pro",
