@@ -127,22 +127,22 @@ with st.sidebar:
         # Add example URL and link
         example_url = "https://www.google.com/maps/@37.8728123,-122.2445339,3a,75y,3.36h,90t/data=!3m7!1e1!3m5!1s4DTABKOpCL6hdNRgnAHTgw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3D4DTABKOpCL6hdNRgnAHTgw%26yaw%3D3.3576431!7i13312!8i6656?entry=ttu"
         
-        # Create two columns for the URL input and paste button
-        url_col1, url_col2 = st.columns([3, 1])
+        # Create columns for the example URL display
+        example_col1, example_col2 = st.columns([4, 1])
         
-        with url_col1:
-            google_url = st.text_input(
-                "Google Maps URL",
-                placeholder="https://www.google.com/maps/@37.5851338,-122.1519467,9z?entry=ttu"
-            )
+        with example_col1:
+            st.markdown(f"💡 **Example Location:** [View in Google Maps]({example_url})")
         
-        with url_col2:
-            if st.button("📋 Paste Example", use_container_width=True):
-                google_url = example_url
-                st.experimental_rerun()
+        with example_col2:
+            if st.button("📋 Copy", key="copy_example", use_container_width=True):
+                st.write(f'<script>navigator.clipboard.writeText("{example_url}")</script>', unsafe_allow_html=True)
+                st.success("Copied!")
         
-        # Show the example link
-        st.markdown(f"💡 **Example Location:** [View in Google Maps]({example_url})")
+        # URL input
+        google_url = st.text_input(
+            "Google Maps URL",
+            placeholder="https://www.google.com/maps/@37.5851338,-122.1519467,9z?entry=ttu"
+        )
         
         if google_url:
             mapcrunch_url = convert_google_to_mapcrunch_url(google_url)
@@ -160,7 +160,7 @@ with st.sidebar:
                 st.error("Invalid Google Maps URL format")
                 st.stop()
         else:
-            st.warning("Please enter a Google Maps URL or click 'Paste Example'")
+            st.warning("Please enter a Google Maps URL")
             st.stop()
             
         model_choice = st.selectbox("Model", list(MODELS_CONFIG.keys()), index=list(MODELS_CONFIG.keys()).index(DEFAULT_MODEL))
