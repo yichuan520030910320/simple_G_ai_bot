@@ -6,6 +6,7 @@ import re
 from io import BytesIO
 from PIL import Image
 from pathlib import Path
+import pyperclip
 
 from geo_bot import GeoBot, AGENT_PROMPT_TEMPLATE
 from benchmark import MapGuesserBenchmark
@@ -137,9 +138,9 @@ with st.sidebar:
             )
         
         with url_col2:
-            if st.button("📋 Paste Example", use_container_width=True):
-                google_url = example_url
-                st.experimental_rerun()
+            if st.button("📋 Copy Example", use_container_width=True):
+                pyperclip.copy(example_url)
+                st.toast("Example URL copied to clipboard! 📋")
         
         # Show the example link
         st.markdown(f"💡 **Example Location:** [View in Google Maps]({example_url})")
