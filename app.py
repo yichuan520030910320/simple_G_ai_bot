@@ -159,7 +159,7 @@ with st.sidebar:
                 st.error("Invalid Google Maps URL format")
                 st.stop()
         else:
-            st.warning("Please enter a Google Maps URL or click 'Paste Example'")
+            st.warning("Please enter a Google Maps URL or paste the link from example location")
             st.stop()
             
         model_choice = st.selectbox("Model", list(MODELS_CONFIG.keys()), index=list(MODELS_CONFIG.keys()).index(DEFAULT_MODEL))
