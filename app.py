@@ -123,8 +123,14 @@ with st.sidebar:
         )
     else:  # Online Mode
         st.info("Enter a Google Maps URL to analyze a specific location")
+        
+        # Add example URL and link
+        example_url = "https://www.google.com/maps/@37.8728123,-122.2445339,3a,75y,3.36h,90t/data=!3m7!1e1!3m5!1s4DTABKOpCL6hdNRgnAHTgw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3D4DTABKOpCL6hdNRgnAHTgw%26yaw%3D3.3576431!7i13312!8i6656?entry=ttu"
+        st.markdown(f"💡 **Example URL:** [View in Google Maps]({example_url})")
+        
         google_url = st.text_input(
             "Google Maps URL",
+            value=example_url,
             placeholder="https://www.google.com/maps/@37.5851338,-122.1519467,9z?entry=ttu"
         )
         
