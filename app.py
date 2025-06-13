@@ -132,16 +132,14 @@ with st.sidebar:
         url_col1, url_col2 = st.columns([3, 1])
         
         with url_col1:
+            # Add a key to the text input for tracking changes
             google_url = st.text_input(
                 "Google Maps URL",
-                placeholder="https://www.google.com/maps/@37.5851338,-122.1519467,9z?entry=ttu"
+                placeholder="https://www.google.com/maps/@37.5851338,-122.1519467,9z?entry=ttu",
+                key="google_maps_url",
+                # on_change=lambda: handle_tab_completion()
             )
-        
-        with url_col2:
-            if st.button("📋 Copy Example", use_container_width=True):
-                pyperclip.copy(example_url)
-                st.toast("Example URL copied to clipboard! 📋")
-        
+
         # Show the example link
         st.markdown(f"💡 **Example Location:** [View in Google Maps]({example_url})")
         
@@ -386,3 +384,8 @@ if start_button:
             file_name=f"geo_results_{dataset_choice}_{model_choice}_{num_samples}samples.json",
             mime="application/json",
         )
+
+def handle_tab_completion():
+    """Handle tab completion for the Google Maps URL input."""
+    if st.session_state.google_maps_url == "":
+        st.session_state.google_maps_url = "https://www.google.com/maps/@37.5851338,-122.1519467,9z?entry=ttu"
