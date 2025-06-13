@@ -255,15 +255,7 @@ if start_button:
                             )
 
                             # Force guess on last step or get AI decision
-                            if step_num == steps_per_sample:
-                                action = "GUESS"
-                                st.warning("Max steps reached. Forcing GUESS.")
-                                # Create a forced decision for consistency
-                                decision = {
-                                    "reasoning": "Maximum steps reached, forcing final guess with fallback coordinates.",
-                                    "action_details": {"action": "GUESS", "lat": 0.0, "lon": 0.0}
-                                }
-                            else:
+                            if action != "GUESS":
                                 # Use the bot's agent step execution
                                 remaining_steps = steps_per_sample - step
                                 decision = bot.execute_agent_step(
@@ -273,18 +265,18 @@ if start_button:
                                 if decision is None:
                                     raise ValueError("Failed to get AI decision")
 
-                                action = decision["action_details"]["action"]
+                            action = decision["action_details"]["action"]
 
-                                # Show AI decision
-                                st.write("**AI Reasoning:**")
-                                st.info(decision.get("reasoning", "N/A"))
+                            # Show AI decision
+                            st.write("**AI Reasoning:**")
+                            st.info(decision.get("reasoning", "N/A"))
 
-                                st.write("**AI Action:**")
-                                st.success(f"`{action}`")
+                            st.write("**AI Action:**")
+                            st.success(f"`{action}`")
 
-                                # Show raw response for debugging
-                                with st.expander("Decision Details"):
-                                    st.json(decision)
+                            # Show raw response for debugging
+                            with st.expander("Decision Details"):
+                                st.json(decision)
 
                             # Add step to history using the bot's method
                             bot.add_step_to_history(history, current_screenshot_b64, decision)
