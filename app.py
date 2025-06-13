@@ -72,10 +72,14 @@ def get_model_class(class_name):
 
 
 # UI Setup
-st.set_page_config(page_title="🧠 Omniscient - AI Geographic Analysis", layout="wide")
+st.set_page_config(page_title="🧠 Omniscient - Multiturn Geographic Intelligence", layout="wide")
 st.title("🧠 Omniscient")
-st.markdown("### *The all-knowing AI that sees everything, knows everything*")
+st.markdown("""
+### *An all-seeing AI agent for geographic analysis and deduction*
 
+Omniscient engages in a multi-turn reasoning process — collecting visual clues, asking intelligent questions, and narrowing down locations step by step.  
+Whether it's identifying terrain, interpreting signs, or tracing road patterns, this AI agent learns, adapts, and solves like a true geo-detective.
+""")
 # Sidebar
 with st.sidebar:
     st.header("Configuration")
