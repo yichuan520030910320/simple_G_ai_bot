@@ -291,13 +291,9 @@ if start_button:
 
                         # Execute action
                         if action == "GUESS":
-                            if step_num == steps_per_sample:
-                                # Forced guess - use fallback coordinates
-                                lat, lon = 0.0, 0.0
-                                st.error("Forced guess with fallback coordinates")
-                            else:
-                                lat = decision.get("action_details", {}).get("lat")
-                                lon = decision.get("action_details", {}).get("lon")
+
+                            lat = decision.get("action_details", {}).get("lat")
+                            lon = decision.get("action_details", {}).get("lon")
 
                             if lat is not None and lon is not None:
                                 final_guess = (lat, lon)
