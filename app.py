@@ -127,45 +127,77 @@ with st.sidebar:
             "Samples to Test", 1, len(golden_labels), min(3, len(golden_labels))
         )
     else:  # Online Mode
-        st.info("Enter a Google Maps URL to analyze a specific location")
+        st.info("Enter a URL to analyze a specific location")
         
-        # Add example URL and link
-        example_url = "https://www.google.com/maps/@37.8728123,-122.2445339,3a,75y,3.36h,90t/data=!3m7!1e1!3m5!1s4DTABKOpCL6hdNRgnAHTgw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3D4DTABKOpCL6hdNRgnAHTgw%26yaw%3D3.3576431!7i13312!8i6656?entry=ttu"
+        # Add example URLs
+        example_google_url = "https://www.google.com/maps/@37.8728123,-122.2445339,3a,75y,3.36h,90t/data=!3m7!1e1!3m5!1s4DTABKOpCL6hdNRgnAHTgw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3D4DTABKOpCL6hdNRgnAHTgw%26yaw%3D3.3576431!7i13312!8i6656?entry=ttu"
+        example_mapcrunch_url = "http://www.mapcrunch.com/p/37.882284_-122.269626_293.91_-6.63_0"
         
-        # Create two columns for the URL input and paste button
-        url_col1, url_col2 = st.columns([3, 1])
+        # Create tabs for different URL types
+        input_tab1, input_tab2 = st.tabs(["Google Maps URL", "MapCrunch URL"])
         
-        with url_col1:
-            # Add a key to the text input for tracking changes
-            google_url = st.text_input(
-                "Google Maps URL",
-                placeholder="https://www.google.com/maps/@37.5851338,-122.1519467,9z?entry=ttu",
-                key="google_maps_url",
-                # on_change=lambda: handle_tab_completion()
+        google_url = ""
+        mapcrunch_url = ""
+        golden_labels = None
+        num_samples = None
+        
+        with input_tab1:
+            url_col1, url_col2 = st.columns([3, 1])
+            with url_col1:
+                google_url = st.text_input(
+                    "Google Maps URL",
+                    placeholder="https://www.google.com/maps/@37.5851338,-122.1519467,9z?entry=ttu",
+                    key="google_maps_url",
+                )
+            st.markdown(f"💡 **Example Location:** [View in Google Maps]({example_google_url})")
+            if google_url:
+                mapcrunch_url_converted = convert_google_to_mapcrunch_url(google_url)
+                if mapcrunch_url_converted:
+                    st.success(f"Converted to MapCrunch URL: {mapcrunch_url_converted}")
+                    try:
+                        golden_labels = [{
+                            "id": "online",
+                            "lat": float(re.search(r'@(-?\d+\.\d+),(-?\d+\.\d+)', google_url).group(1)),
+                            "lng": float(re.search(r'@(-?\d+\.\d+),(-?\d+\.\d+)', google_url).group(2)),
+                            "url": mapcrunch_url_converted
+                        }]
+                        num_samples = 1
+                    except Exception as e:
+                        st.error(f"Invalid Google Maps URL format: {str(e)}")
+                else:
+                    st.error("Invalid Google Maps URL format")
+        
+        with input_tab2:
+            st.markdown("💡 **Example Location:**")
+            st.markdown(f"[View in MapCrunch]({example_mapcrunch_url})")
+            st.code(example_mapcrunch_url, language="text")
+            mapcrunch_url = st.text_input(
+                "MapCrunch URL",
+                placeholder=example_mapcrunch_url,
+                key="mapcrunch_url"
             )
-
-        # Show the example link
-        st.markdown(f"💡 **Example Location:** [View in Google Maps]({example_url})")
-        
-        if google_url:
-            mapcrunch_url = convert_google_to_mapcrunch_url(google_url)
             if mapcrunch_url:
-                st.success(f"Converted to MapCrunch URL: {mapcrunch_url}")
-                # Create a single sample for online mode
-                golden_labels = [{
-                    "id": "online",
-                    "lat": float(re.search(r'@(-?\d+\.\d+),(-?\d+\.\d+)', google_url).group(1)),
-                    "lng": float(re.search(r'@(-?\d+\.\d+),(-?\d+\.\d+)', google_url).group(2)),
-                    "url": mapcrunch_url
-                }]
-                num_samples = 1
-            else:
-                st.error("Invalid Google Maps URL format")
-                st.stop()
-        else:
-            st.warning("Please enter a Google Maps URL or paste the link from example location")
+                try:
+                    coords = mapcrunch_url.split('/')[-1].split('_')
+                    lat, lon = float(coords[0]), float(coords[1])
+                    golden_labels = [{
+                        "id": "online",
+                        "lat": lat,
+                        "lng": lon,
+                        "url": mapcrunch_url
+                    }]
+                    num_samples = 1
+                except Exception as e:
+                    st.error(f"Invalid MapCrunch URL format: {str(e)}")
+        
+        # Only stop if neither input is provided
+        if not google_url and not mapcrunch_url:
+            st.warning("Please enter a Google Maps URL or MapCrunch URL, or use the example above.")
             st.stop()
-            
+        if golden_labels is None or num_samples is None:
+            st.warning("Please enter a valid URL.")
+            st.stop()
+        
         model_choice = st.selectbox("Model", list(MODELS_CONFIG.keys()), index=list(MODELS_CONFIG.keys()).index(DEFAULT_MODEL))
         steps_per_sample = st.slider("Max Steps", 1, 20, 10)
         temperature = st.slider(
