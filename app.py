@@ -127,22 +127,22 @@ with st.sidebar:
         # Add example URL and link
         example_url = "https://www.google.com/maps/@37.8728123,-122.2445339,3a,75y,3.36h,90t/data=!3m7!1e1!3m5!1s4DTABKOpCL6hdNRgnAHTgw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3D4DTABKOpCL6hdNRgnAHTgw%26yaw%3D3.3576431!7i13312!8i6656?entry=ttu"
         
-        # Create columns for the example URL display
-        example_col1, example_col2 = st.columns([4, 1])
+        # Create two columns for the URL input and paste button
+        url_col1, url_col2 = st.columns([3, 1])
         
-        with example_col1:
-            st.markdown(f"💡 **Example Location:** [View in Google Maps]({example_url})")
+        with url_col1:
+            google_url = st.text_input(
+                "Google Maps URL",
+                placeholder="https://www.google.com/maps/@37.5851338,-122.1519467,9z?entry=ttu"
+            )
         
-        with example_col2:
-            if st.button("📋 Copy", key="copy_example", use_container_width=True):
-                st.write(f'<script>navigator.clipboard.writeText("{example_url}")</script>', unsafe_allow_html=True)
-                st.success("Copied!")
+        with url_col2:
+            if st.button("📋 Paste Example", use_container_width=True):
+                google_url = example_url
+                st.experimental_rerun()
         
-        # URL input
-        google_url = st.text_input(
-            "Google Maps URL",
-            placeholder="https://www.google.com/maps/@37.5851338,-122.1519467,9z?entry=ttu"
-        )
+        # Show the example link
+        st.markdown(f"💡 **Example Location:** [View in Google Maps]({example_url})")
         
         if google_url:
             mapcrunch_url = convert_google_to_mapcrunch_url(google_url)
@@ -160,7 +160,7 @@ with st.sidebar:
                 st.error("Invalid Google Maps URL format")
                 st.stop()
         else:
-            st.warning("Please enter a Google Maps URL")
+            st.warning("Please enter a Google Maps URL or click 'Paste Example'")
             st.stop()
             
         model_choice = st.selectbox("Model", list(MODELS_CONFIG.keys()), index=list(MODELS_CONFIG.keys()).index(DEFAULT_MODEL))
@@ -188,7 +188,10 @@ if start_button:
     progress_bar = st.progress(0)
 
     with GeoBot(
-        model=model_class, model_name=config["model_name"], headless=True, temperature=temperature
+        model=model_class,
+        model_name=config["model_name"],
+        headless=True,
+        temperature=temperature,
     ) as bot:
         for i, sample in enumerate(test_samples):
             st.divider()
@@ -203,103 +206,99 @@ if start_button:
             
             bot.controller.setup_clean_environment()
 
-            # Create scrollable container for this sample
+            # Create containers for UI updates
             sample_container = st.container()
 
-            with sample_container:
-                # Initialize step tracking
-                history = bot.init_history()
-                final_guess = None
+            # Initialize UI state for this sample
+            step_containers = {}
+            sample_steps_data = []
 
-                for step in range(steps_per_sample):
-                    step_num = step + 1
+            def ui_step_callback(step_info):
+                """Callback function to update UI after each step"""
+                step_num = step_info["step_num"]
 
-                    # Create step container
-                    with st.container():
-                        st.subheader(f"Step {step_num}/{steps_per_sample}")
+                # Store step data
+                sample_steps_data.append(step_info)
 
-                        # Take screenshot and show
-                        bot.controller.label_arrows_on_screen()
-                        screenshot_bytes = bot.controller.take_street_view_screenshot()
+                with sample_container:
+                    # Create step container if it doesn't exist
+                    if step_num not in step_containers:
+                        step_containers[step_num] = st.container()
+
+                    with step_containers[step_num]:
+                        st.subheader(f"Step {step_num}/{step_info['max_steps']}")
 
                         col1, col2 = st.columns([1, 2])
 
                         with col1:
+                            # Display screenshot
                             st.image(
-                                screenshot_bytes,
+                                step_info["screenshot_bytes"],
                                 caption=f"What AI sees - Step {step_num}",
                                 use_column_width=True,
                             )
 
                         with col2:
-                            # Get current screenshot as base64
-                            current_screenshot_b64 = bot.pil_to_base64(
-                                Image.open(BytesIO(screenshot_bytes))
-                            )
-                            
-                            available_actions = bot.controller.get_available_actions()
-
-                            # Show AI context
+                            # Show available actions
                             st.write("**Available Actions:**")
-                            st.code(json.dumps(available_actions, indent=2))
+                            st.code(
+                                json.dumps(step_info["available_actions"], indent=2)
+                            )
 
-                            # Generate and display history
-                            history_text = bot.generate_history_text(history)
+                            # Show history context - use the history from step_info
+                            current_history = step_info.get("history", [])
+                            history_text = bot.generate_history_text(current_history)
                             st.write("**AI Context:**")
                             st.text_area(
                                 "History",
                                 history_text,
                                 height=100,
                                 disabled=True,
-                                key=f"history_{i}_{step}",
+                                key=f"history_{i}_{step_num}",
                             )
 
-                            # Force guess on last step or get AI decision
-                            if action != "GUESS":
-                                # Use the bot's agent step execution
-                                remaining_steps = steps_per_sample - step
-                                decision = bot.execute_agent_step(
-                                    history, remaining_steps, current_screenshot_b64, available_actions
-                                )
+                            # Show AI reasoning and action
+                            action = step_info.get("action_details", {}).get(
+                                "action", "N/A"
+                            )
 
-                                if decision is None:
-                                    raise ValueError("Failed to get AI decision")
+                            if step_info.get("is_final_step") and action != "GUESS":
+                                st.warning("Max steps reached. Forcing GUESS.")
 
-                            action = decision["action_details"]["action"]
-
-                            # Show AI decision
                             st.write("**AI Reasoning:**")
-                            st.info(decision.get("reasoning", "N/A"))
+                            st.info(step_info.get("reasoning", "N/A"))
 
                             st.write("**AI Action:**")
-                            st.success(f"`{action}`")
+                            if action == "GUESS":
+                                lat = step_info.get("action_details", {}).get("lat")
+                                lon = step_info.get("action_details", {}).get("lon")
+                                st.success(f"`{action}` - {lat:.4f}, {lon:.4f}")
+                            else:
+                                st.success(f"`{action}`")
 
-                            # Show raw response for debugging
+                            # Show decision details for debugging
                             with st.expander("Decision Details"):
-                                st.json(decision)
+                                decision_data = {
+                                    "reasoning": step_info.get("reasoning"),
+                                    "action_details": step_info.get("action_details"),
+                                    "remaining_steps": step_info.get("remaining_steps"),
+                                }
+                                st.json(decision_data)
 
-                            # Add step to history using the bot's method
-                            bot.add_step_to_history(history, current_screenshot_b64, decision)
+                # Force UI refresh
+                time.sleep(0.5)  # Small delay to ensure UI updates are visible
 
-                        # Execute action
-                        if action == "GUESS":
+            # Run the agent loop with UI callback
+            try:
+                final_guess = bot.run_agent_loop(
+                    max_steps=steps_per_sample, step_callback=ui_step_callback
+                )
+            except Exception as e:
+                st.error(f"Error during agent execution: {e}")
+                final_guess = None
 
-                            lat = decision.get("action_details", {}).get("lat")
-                            lon = decision.get("action_details", {}).get("lon")
-
-                            if lat is not None and lon is not None:
-                                final_guess = (lat, lon)
-                                st.success(f"Final Guess: {lat:.4f}, {lon:.4f}")
-                            break
-                        else:
-                            # Use bot's execute_action method
-                            bot.execute_action(action)
-
-                        # Auto scroll to bottom
-                        st.empty()  # Force refresh to show latest content
-                        time.sleep(1)
-
-                # Sample Results
+            # Sample Results
+            with sample_container:
                 st.subheader("Sample Result")
                 true_coords = {"lat": sample.get("lat"), "lng": sample.get("lng")}
                 distance_km = None
@@ -332,6 +331,9 @@ if start_button:
                     {
                         "sample_id": sample.get("id"),
                         "model": model_choice,
+                        "steps_taken": len(sample_steps_data),
+                        "max_steps": steps_per_sample,
+                        "temperature": temperature,
                         "true_coordinates": true_coords,
                         "predicted_coordinates": final_guess,
                         "distance_km": distance_km,
