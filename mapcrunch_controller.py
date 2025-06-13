@@ -291,3 +291,13 @@ class MapCrunchController:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
+
+    def load_url(self, url):
+        """Load a specific MapCrunch URL."""
+        try:
+            self.driver.get(url)
+            time.sleep(2)  # Wait for the page to load
+            return True
+        except Exception as e:
+            print(f"Error loading URL: {e}")
+            return False
