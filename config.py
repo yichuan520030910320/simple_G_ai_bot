@@ -79,17 +79,17 @@ MODELS_CONFIG = {
     },
     "qwen2.5-vl-32b-free": {
         "class": "OpenRouter",
-        "model_name": "qwen/qwen2.5-vl-32b-instruct:free",
+        "model_name": "qwen/qwen-2.5-vl-32b-instruct:free",
         "description": "Qwen2.5 VL 32B - OpenRouter (FREE!)",
     },
     "qwen2.5-vl-7b": {
         "class": "OpenRouter",
-        "model_name": "qwen/qwen2.5-vl-7b-instruct",
+        "model_name": "qwen/qwen-2.5-vl-7b-instruct",
         "description": "Qwen2.5 VL 7B - OpenRouter",
     },
     "qwen2.5-vl-3b": {
         "class": "OpenRouter",
-        "model_name": "qwen/qwen2.5-vl-3b-instruct",
+        "model_name": "qwen/qwen-2.5-vl-3b-instruct",
         "description": "Qwen2.5 VL 3B - OpenRouter (Fastest)",
     },
 }
