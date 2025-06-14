@@ -200,7 +200,7 @@ class GeoBot:
         history: List[Dict[str, Any]],
         remaining_steps: int,
         current_screenshot_b64: str,
-        available_actions: Dict[str, Any],
+        available_actions: List[str],
     ) -> Optional[Dict[str, Any]]:
         """
         Execute a single agent step: generate prompt, get AI decision, return decision.
@@ -214,7 +214,7 @@ class GeoBot:
         prompt = AGENT_PROMPT_TEMPLATE.format(
             remaining_steps=remaining_steps,
             history_text=history_text,
-            available_actions=json.dumps(available_actions),
+            available_actions=available_actions,
         )
 
         try:
@@ -308,8 +308,10 @@ class GeoBot:
                         == "GUESS"
                     ):
                         decision = ai_decision
-                except:
-                    pass  # Use fallback
+                except Exception as e:
+                    print(
+                        f"\nERROR: An exception occurred during the final GUESS attempt: {e}. Using fallback (0,0).\n"
+                    )
             else:
                 # Normal step execution
                 decision = self.execute_agent_step(
