@@ -1,0 +1,309 @@
+{
+  "metadata": {
+    "dataset_name": "example3",
+    "collection_date": "2025-06-12T15:57:06.206331",
+    "collection_options": {}
+  },
+  "samples": [
+    {
+      "id": "197a5345-a9da-41e1-93c5-b46ad24e5363",
+      "timestamp": "2025-06-12T15:56:00.069960",
+      "lat": 32.450617168194135,
+      "lng": -114.69399063957216,
+      "address": "Libramiento Golfo de Sta Clara-Ejido La Islita, San Luis R\u00edo Colorado, Sonora",
+      "pano_id": "RwuCf43rrr5vnlEgH7uMHw",
+      "pov": {
+        "heading": -265.28,
+        "pitch": 5,
+        "zoom": 1.000000033789912
+      },
+      "url_slug": "32.450617_-114.693991_-265.28_-5.00_0",
+      "thumbnail_path": "197a5345-a9da-41e1-93c5-b46ad24e5363.jpg"
+    },
+    {
+      "id": "66f91dcf-3fe6-4962-bfe6-2de8a349d6f6",
+      "timestamp": "2025-06-12T15:56:03.857510",
+      "lat": -37.78214235746083,
+      "lng": 144.12300194368797,
+      "address": "1476 Ballan-Meredith Rd, Morrisons, Victoria",
+      "pano_id": "hXyohzqEx6F3Q7eSQ089Mw",
+      "pov": {
+        "heading": -22.279999999999973,
+        "pitch": 5,
+        "zoom": 1.0000055105094043
+      },
+      "url_slug": "-37.782142_144.123002_-22.28_-5.00_0",
+      "thumbnail_path": "66f91dcf-3fe6-4962-bfe6-2de8a349d6f6.jpg"
+    },
+    {
+      "id": "7c22a7fc-fa66-40cc-88fd-626b826e14af",
+      "timestamp": "2025-06-12T15:56:07.240175",
+      "lat": 61.90332655530213,
+      "lng": 25.33606097079652,
+      "address": "98 Tervaj\u00e4rventie, Central Finland",
+      "pano_id": "yYWVkowafmuAlOFKWCV1TA",
+      "pov": {
+        "heading": 156.72000000000003,
+        "pitch": 5,
+        "zoom": 1.0000044280956983
+      },
+      "url_slug": "61.903327_25.336061_156.72_-5.00_0",
+      "thumbnail_path": "7c22a7fc-fa66-40cc-88fd-626b826e14af.jpg"
+    },
+    {
+      "id": "0facf8d6-5bcf-41e0-931e-2585e177fb68",
+      "timestamp": "2025-06-12T15:56:10.614004",
+      "lat": -18.13971017041426,
+      "lng": -63.937036497382664,
+      "address": "7, Santa Cruz Department",
+      "pano_id": "ILV43CvgWyxYt5HTTieZ4Q",
+      "pov": {
+        "heading": 290.72,
+        "pitch": 5,
+        "zoom": 1.0000061861010834
+      },
+      "url_slug": "-18.139710_-63.937036_290.72_-5.00_0",
+      "thumbnail_path": "0facf8d6-5bcf-41e0-931e-2585e177fb68.jpg"
+    },
+    {
+      "id": "9b372f4e-ca87-481c-a4d0-c3a6c90dff12",
+      "timestamp": "2025-06-12T15:56:14.031494",
+      "lat": 39.28408711718923,
+      "lng": 22.84441276717771,
+      "address": "EO30, Decentralized Administration of Thessaly and Central Greece",
+      "pano_id": "TnZ8AiIDWLWyoLMtWvThPg",
+      "pov": {
+        "heading": -320.28,
+        "pitch": 5,
+        "zoom": 1.0000078610298728
+      },
+      "url_slug": "39.284087_22.844413_-320.28_-5.00_0",
+      "thumbnail_path": "9b372f4e-ca87-481c-a4d0-c3a6c90dff12.jpg"
+    },
+    {
+      "id": "6558ba29-9edc-4c66-9213-edb82e77cf77",
+      "timestamp": "2025-06-12T15:56:17.391786",
+      "lat": 57.728373123146845,
+      "lng": 11.654417090381687,
+      "address": "1 Tjolmenv\u00e4gen, \u00d6cker\u00f6, V\u00e4stra G\u00f6taland County",
+      "pano_id": "FUCNS8h6b1KdjbkqekrpKw",
+      "pov": {
+        "heading": -114.27999999999997,
+        "pitch": 5,
+        "zoom": 1.0000089987016267
+      },
+      "url_slug": "57.728373_11.654417_-114.28_-5.00_0",
+      "thumbnail_path": "6558ba29-9edc-4c66-9213-edb82e77cf77.jpg"
+    },
+    {
+      "id": "ed167213-4364-40ae-80ee-78bf63480b9c",
+      "timestamp": "2025-06-12T15:56:20.754401",
+      "lat": -14.333745187624173,
+      "lng": -170.720756044093,
+      "address": "Rte 014, Tafuna, Western District",
+      "pano_id": "bUeapV3I_9VGBhumXlk2Tw",
+      "pov": {
+        "heading": 151.72000000000003,
+        "pitch": 5,
+        "zoom": 1.000005537590412
+      },
+      "url_slug": "-14.333745_-170.720756_151.72_-5.00_0",
+      "thumbnail_path": "ed167213-4364-40ae-80ee-78bf63480b9c.jpg"
+    },
+    {
+      "id": "41734c39-d109-4c5c-a939-82fcadfadbdf",
+      "timestamp": "2025-06-12T15:56:24.184911",
+      "lat": 45.86505410116751,
+      "lng": 15.519019308411098,
+      "address": "Pokopali\u0161\u010de Bu\u0161e\u010da vas",
+      "pano_id": "CAoSFkNJSE0wb2dLRUlDQWdJQ0VpYWVtWlE.",
+      "pov": {
+        "heading": 326.72,
+        "pitch": 5,
+        "zoom": 1.0000074031092103
+      },
+      "url_slug": "45.865054_15.519019_326.72_-5.00_0",
+      "thumbnail_path": "41734c39-d109-4c5c-a939-82fcadfadbdf.jpg"
+    },
+    {
+      "id": "04f77afb-4b62-4d27-ae04-69f72b47cd30",
+      "timestamp": "2025-06-12T15:56:28.265166",
+      "lat": 53.210286076785295,
+      "lng": -114.86431799288032,
+      "address": "AB-22, Buck Creek, Alberta",
+      "pano_id": "RfHJ9zAVgKGNzIAqHfk8rA",
+      "pov": {
+        "heading": -134.27999999999997,
+        "pitch": 5,
+        "zoom": 1.0000034294812554
+      },
+      "url_slug": "53.210286_-114.864318_-134.28_-5.00_0",
+      "thumbnail_path": "04f77afb-4b62-4d27-ae04-69f72b47cd30.jpg"
+    },
+    {
+      "id": "e3141a38-fb2d-45a8-8f3a-4c26018720e4",
+      "timestamp": "2025-06-12T15:56:31.850499",
+      "lat": 57.66292577014665,
+      "lng": 27.24427273260464,
+      "address": "M\u00f6ldre, V\u00f5ru County",
+      "pano_id": "vvKr0wNXF5WfS1lOq1IIxw",
+      "pov": {
+        "heading": 44.72000000000003,
+        "pitch": 5,
+        "zoom": 1.000000124614534
+      },
+      "url_slug": "57.662926_27.244273_44.72_-5.00_0",
+      "thumbnail_path": "e3141a38-fb2d-45a8-8f3a-4c26018720e4.jpg"
+    },
+    {
+      "id": "1eea0ce4-3332-4096-982b-37e97772e105",
+      "timestamp": "2025-06-12T15:56:35.316086",
+      "lat": -3.681535588587605,
+      "lng": -80.19932740757173,
+      "address": "24250 TU-101, Matapalo, Tumbes",
+      "pano_id": "48w450euvqIfAVQ7R3HLng",
+      "pov": {
+        "heading": 295.72,
+        "pitch": 5,
+        "zoom": 1.0000097574696656
+      },
+      "url_slug": "-3.681536_-80.199327_295.72_-5.00_0",
+      "thumbnail_path": "1eea0ce4-3332-4096-982b-37e97772e105.jpg"
+    },
+    {
+      "id": "e49be483-24e8-47ef-bf01-77dcfcb5d2d4",
+      "timestamp": "2025-06-12T15:56:38.725810",
+      "lat": -14.279133596130174,
+      "lng": -170.55687001529134,
+      "address": "Route 119, Aunu\u02bbu, AS 96799",
+      "pano_id": "TpeB7isFtiuumh6Eh15ZcA",
+      "pov": {
+        "heading": -265.28,
+        "pitch": 5,
+        "zoom": 1.0000006336487888
+      },
+      "url_slug": "-14.279134_-170.556870_-265.28_-5.00_0",
+      "thumbnail_path": "e49be483-24e8-47ef-bf01-77dcfcb5d2d4.jpg"
+    },
+    {
+      "id": "c5a611d5-29d2-4a83-b00d-1ed7df76869f",
+      "timestamp": "2025-06-12T15:56:42.149170",
+      "lat": 31.800383498252334,
+      "lng": 35.24268946547305,
+      "address": "Moqatel, Jerusalem, Jerusalem District",
+      "pano_id": "1VidmzHWGOrCkkidLLWF3Q",
+      "pov": {
+        "heading": -159.27999999999997,
+        "pitch": 5,
+        "zoom": 1.0000062558576592
+      },
+      "url_slug": "31.800383_35.242689_-159.28_-5.00_0",
+      "thumbnail_path": "c5a611d5-29d2-4a83-b00d-1ed7df76869f.jpg"
+    },
+    {
+      "id": "6dd669f4-2f13-4909-a480-9708a23cd80f",
+      "timestamp": "2025-06-12T15:56:45.579437",
+      "lat": 51.29578341353695,
+      "lng": 12.500988457395495,
+      "address": "Thensa",
+      "pano_id": "CAoSF0NJSE0wb2dLRUlDQWdJREQyZUtxbVFF",
+      "pov": {
+        "heading": -42.27999999999997,
+        "pitch": 5,
+        "zoom": 1.0000073719182492
+      },
+      "url_slug": "51.295783_12.500988_-42.28_-5.00_0",
+      "thumbnail_path": "6dd669f4-2f13-4909-a480-9708a23cd80f.jpg"
+    },
+    {
+      "id": "4f76d721-c2ec-4dc4-9485-e542d70ccf5c",
+      "timestamp": "2025-06-12T15:56:48.982692",
+      "lat": 58.32519714026791,
+      "lng": 26.777231622290483,
+      "address": "5 Palupealse, Aardlapalu, Tartu County",
+      "pano_id": "WUUzxDv8tWsNfGv28OGIeA",
+      "pov": {
+        "heading": 206.72000000000003,
+        "pitch": 5,
+        "zoom": 1.0000007116201164
+      },
+      "url_slug": "58.325197_26.777232_206.72_-5.00_0",
+      "thumbnail_path": "4f76d721-c2ec-4dc4-9485-e542d70ccf5c.jpg"
+    },
+    {
+      "id": "23a2f011-371a-48ed-bed7-254e8beefff3",
+      "timestamp": "2025-06-12T15:56:52.355563",
+      "lat": 27.53069417681522,
+      "lng": 90.1727287722609,
+      "address": "Trashigang-Semtokha Hwy, Wangdue Phodrang",
+      "pano_id": "1xZ7zVnYVh1f-hN4Xo_xFA",
+      "pov": {
+        "heading": 304.72,
+        "pitch": 5,
+        "zoom": 1.0000081048518055
+      },
+      "url_slug": "27.530694_90.172729_304.72_-5.00_0",
+      "thumbnail_path": "23a2f011-371a-48ed-bed7-254e8beefff3.jpg"
+    },
+    {
+      "id": "af61d989-8751-4c07-820c-8b35ffd0f2ae",
+      "timestamp": "2025-06-12T15:56:55.722548",
+      "lat": 5.287167713224647,
+      "lng": 103.06979234400693,
+      "address": "Lorong Bunga Raya, Kuala Terengganu, Terengganu",
+      "pano_id": "Pktsz31ZAWkJ-R1Ixesabw",
+      "pov": {
+        "heading": -178.27999999999997,
+        "pitch": 5,
+        "zoom": 1.0000068048105129
+      },
+      "url_slug": "5.287168_103.069792_-178.28_-5.00_0",
+      "thumbnail_path": "af61d989-8751-4c07-820c-8b35ffd0f2ae.jpg"
+    },
+    {
+      "id": "484ba34d-e072-4cb1-81b8-b1a4af8f36e9",
+      "timestamp": "2025-06-12T15:56:59.179328",
+      "lat": 45.95418096151833,
+      "lng": 5.379404630232549,
+      "address": "Amb\u00e9rieu-en-Bugey, Auvergne-Rh\u00f4ne-Alpes",
+      "pano_id": "AhkPs6oryerDdiRpLzRrDg",
+      "pov": {
+        "heading": 90.72000000000003,
+        "pitch": 5,
+        "zoom": 1.000005463895491
+      },
+      "url_slug": "45.954181_5.379405_90.72_-5.00_0",
+      "thumbnail_path": "484ba34d-e072-4cb1-81b8-b1a4af8f36e9.jpg"
+    },
+    {
+      "id": "720334f9-6332-4438-bcd2-68e0b464bb65",
+      "timestamp": "2025-06-12T15:57:02.582946",
+      "lat": 25.590547334531223,
+      "lng": 55.77315301790442,
+      "address": "E311, Al Raafah, Ras Al Khaimah",
+      "pano_id": "XNQCCNZ7aSxDPKeOoBaBYA",
+      "pov": {
+        "heading": 338.72,
+        "pitch": 5,
+        "zoom": 1.000001329133932
+      },
+      "url_slug": "25.590547_55.773153_338.72_-5.00_0",
+      "thumbnail_path": "720334f9-6332-4438-bcd2-68e0b464bb65.jpg"
+    },
+    {
+      "id": "d19dbe06-9b1a-4639-8d02-b21d2f87e8f4",
+      "timestamp": "2025-06-12T15:57:05.925602",
+      "lat": 69.97748674684166,
+      "lng": 19.105915802473216,
+      "address": "32 Fv302, Troms",
+      "pano_id": "CLIgvpLaAivFTsJqHVhsZg",
+      "pov": {
+        "heading": -129.27999999999997,
+        "pitch": 5,
+        "zoom": 1.0000075163842848
+      },
+      "url_slug": "69.977487_19.105916_-129.28_-5.00_0",
+      "thumbnail_path": "d19dbe06-9b1a-4639-8d02-b21d2f87e8f4.jpg"
+    }
+  ]
+}

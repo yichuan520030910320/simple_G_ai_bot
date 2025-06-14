@@ -31,6 +31,10 @@ BENCHMARK_CONFIG = {
 # MapCrunch options
 MAPCRUNCH_OPTIONS = {}
 
+# Default settings
+DEFAULT_MODEL = "gemini-2.5-pro"
+DEFAULT_TEMPERATURE = 1.0
+
 # Model configurations
 MODELS_CONFIG = {
     "gpt-4o": {

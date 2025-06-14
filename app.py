@@ -2,13 +2,19 @@ import streamlit as st
 import json
 import os
 import time
-from io import BytesIO
-from PIL import Image
+import re
 from pathlib import Path
 
-from geo_bot import GeoBot, AGENT_PROMPT_TEMPLATE
+from geo_bot import GeoBot
 from benchmark import MapGuesserBenchmark
-from config import MODELS_CONFIG, get_data_paths, SUCCESS_THRESHOLD_KM, get_model_class
+from config import (
+    MODELS_CONFIG,
+    get_data_paths,
+    SUCCESS_THRESHOLD_KM,
+    get_model_class,
+    DEFAULT_MODEL,
+    DEFAULT_TEMPERATURE,
+)
 
 
 # Simple API key setup
@@ -20,6 +26,24 @@ if "GOOGLE_API_KEY" in st.secrets:
     os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
 if "HF_TOKEN" in st.secrets:
     os.environ["HF_TOKEN"] = st.secrets["HF_TOKEN"]
+
+
+def convert_google_to_mapcrunch_url(google_url):
+    """Convert Google Maps URL to MapCrunch URL format."""
+    try:
+        # Extract coordinates using regex
+        match = re.search(r"@(-?\d+\.\d+),(-?\d+\.\d+)", google_url)
+        if not match:
+            return None
+
+        lat, lon = match.groups()
+        # MapCrunch format: lat_lon_heading_pitch_zoom
+        # Using default values for heading (317.72), pitch (0.86), and zoom (0)
+        mapcrunch_url = f"http://www.mapcrunch.com/p/{lat}_{lon}_317.72_0.86_0"
+        return mapcrunch_url
+    except Exception as e:
+        st.error(f"Error converting URL: {str(e)}")
+        return None
 
 
 def get_available_datasets():
@@ -36,54 +60,164 @@ def get_available_datasets():
 
 
 # UI Setup
-st.set_page_config(page_title="🧠 Omniscient - AI Geographic Analysis", layout="wide")
+st.set_page_config(
+    page_title="🧠 Omniscient - Multiturn Geographic Intelligence", layout="wide"
+)
 st.title("🧠 Omniscient")
-st.markdown("### *The all-knowing AI that sees everything, knows everything*")
+st.markdown("""
+### *An all-seeing AI agent for geographic analysis and deduction*
 
+Omniscient engages in a multi-turn reasoning process — collecting visual clues, asking intelligent questions, and narrowing down locations step by step.  
+Whether it's identifying terrain, interpreting signs, or tracing road patterns, this AI agent learns, adapts, and solves like a true geo-detective.
+""")
 # Sidebar
 with st.sidebar:
     st.header("Configuration")
 
-    # Get available datasets and ensure we have a valid default
-    available_datasets = get_available_datasets()
-    default_dataset = available_datasets[0] if available_datasets else "default"
+    # Mode selection
+    mode = st.radio("Mode", ["Dataset Mode", "Online Mode"], index=0)
 
-    dataset_choice = st.selectbox("Dataset", available_datasets, index=0)
-    model_choice = st.selectbox("Model", list(MODELS_CONFIG.keys()))
-    steps_per_sample = st.slider("Max Steps", 3, 20, 10)
-    temperature = st.slider(
-        "Temperature",
-        0.0,
-        2.0,
-        0.0,
-        0.1,
-        help="Controls randomness in AI responses. 0.0 = deterministic, higher = more creative",
-    )
+    if mode == "Dataset Mode":
+        # Get available datasets and ensure we have a valid default
+        available_datasets = get_available_datasets()
+        default_dataset = available_datasets[0] if available_datasets else "default"
 
-    # Load dataset with error handling
-    data_paths = get_data_paths(dataset_choice)
-    try:
-        with open(data_paths["golden_labels"], "r") as f:
-            golden_labels = json.load(f).get("samples", [])
+        dataset_choice = st.selectbox("Dataset", available_datasets, index=0)
+        model_choice = st.selectbox(
+            "Model",
+            list(MODELS_CONFIG.keys()),
+            index=list(MODELS_CONFIG.keys()).index(DEFAULT_MODEL),
+        )
+        steps_per_sample = st.slider("Max Steps", 1, 20, 10)
+        temperature = st.slider(
+            "Temperature",
+            0.0,
+            2.0,
+            DEFAULT_TEMPERATURE,
+            0.1,
+            help="Controls randomness in AI responses. 0.0 = deterministic, higher = more creative",
+        )
 
-        st.info(f"Dataset '{dataset_choice}' has {len(golden_labels)} samples")
-        if len(golden_labels) == 0:
-            st.error(f"Dataset '{dataset_choice}' contains no samples!")
+        # Load dataset with error handling
+        data_paths = get_data_paths(dataset_choice)
+        try:
+            with open(data_paths["golden_labels"], "r") as f:
+                golden_labels = json.load(f).get("samples", [])
+
+            st.info(f"Dataset '{dataset_choice}' has {len(golden_labels)} samples")
+            if len(golden_labels) == 0:
+                st.error(f"Dataset '{dataset_choice}' contains no samples!")
+                st.stop()
+
+        except FileNotFoundError:
+            st.error(
+                f"❌ Dataset '{dataset_choice}' not found at {data_paths['golden_labels']}"
+            )
+            st.info("💡 Available datasets: " + ", ".join(available_datasets))
+            st.stop()
+        except Exception as e:
+            st.error(f"❌ Error loading dataset '{dataset_choice}': {str(e)}")
             st.stop()
 
-    except FileNotFoundError:
-        st.error(
-            f"❌ Dataset '{dataset_choice}' not found at {data_paths['golden_labels']}"
+        num_samples = st.slider(
+            "Samples to Test", 1, len(golden_labels), min(3, len(golden_labels))
         )
-        st.info("💡 Available datasets: " + ", ".join(available_datasets))
-        st.stop()
-    except Exception as e:
-        st.error(f"❌ Error loading dataset '{dataset_choice}': {str(e)}")
-        st.stop()
+    else:  # Online Mode
+        st.info("Enter a URL to analyze a specific location")
 
-    num_samples = st.slider(
-        "Samples to Test", 1, len(golden_labels), min(3, len(golden_labels))
-    )
+        # Add example URLs
+        example_google_url = "https://www.google.com/maps/@37.8728123,-122.2445339,3a,75y,3.36h,90t/data=!3m7!1e1!3m5!1s4DTABKOpCL6hdNRgnAHTgw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3D4DTABKOpCL6hdNRgnAHTgw%26yaw%3D3.3576431!7i13312!8i6656?entry=ttu"
+        example_mapcrunch_url = (
+            "http://www.mapcrunch.com/p/37.882284_-122.269626_293.91_-6.63_0"
+        )
+
+        # Create tabs for different URL types
+        input_tab1, input_tab2 = st.tabs(["Google Maps URL", "MapCrunch URL"])
+
+        google_url = ""
+        mapcrunch_url = ""
+        golden_labels = None
+        num_samples = None
+
+        with input_tab1:
+            url_col1, url_col2 = st.columns([3, 1])
+            with url_col1:
+                google_url = st.text_input(
+                    "Google Maps URL",
+                    placeholder="https://www.google.com/maps/@37.5851338,-122.1519467,9z?entry=ttu",
+                    key="google_maps_url",
+                )
+            st.markdown(
+                f"💡 **Example Location:** [View in Google Maps]({example_google_url})"
+            )
+            if google_url:
+                mapcrunch_url_converted = convert_google_to_mapcrunch_url(google_url)
+                if mapcrunch_url_converted:
+                    st.success(f"Converted to MapCrunch URL: {mapcrunch_url_converted}")
+                    try:
+                        match = re.search(r"@(-?\d+\.\d+),(-?\d+\.\d+)", google_url)
+                        if not match:
+                            st.error("Invalid Google Maps URL format")
+                            st.stop()
+
+                        lat, lon = match.groups()
+
+                        golden_labels = [
+                            {
+                                "id": "online",
+                                "lat": float(lat),
+                                "lng": float(lon),
+                                "url": mapcrunch_url_converted,
+                            }
+                        ]
+                        num_samples = 1
+                    except Exception as e:
+                        st.error(f"Invalid Google Maps URL format: {str(e)}")
+                else:
+                    st.error("Invalid Google Maps URL format")
+
+        with input_tab2:
+            st.markdown("💡 **Example Location:**")
+            st.markdown(f"[View in MapCrunch]({example_mapcrunch_url})")
+            st.code(example_mapcrunch_url, language="text")
+            mapcrunch_url = st.text_input(
+                "MapCrunch URL", placeholder=example_mapcrunch_url, key="mapcrunch_url"
+            )
+            if mapcrunch_url:
+                try:
+                    coords = mapcrunch_url.split("/")[-1].split("_")
+                    lat, lon = float(coords[0]), float(coords[1])
+                    golden_labels = [
+                        {"id": "online", "lat": lat, "lng": lon, "url": mapcrunch_url}
+                    ]
+                    num_samples = 1
+                except Exception as e:
+                    st.error(f"Invalid MapCrunch URL format: {str(e)}")
+
+        # Only stop if neither input is provided
+        if not google_url and not mapcrunch_url:
+            st.warning(
+                "Please enter a Google Maps URL or MapCrunch URL, or use the example above."
+            )
+            st.stop()
+        if golden_labels is None or num_samples is None:
+            st.warning("Please enter a valid URL.")
+            st.stop()
+
+        model_choice = st.selectbox(
+            "Model",
+            list(MODELS_CONFIG.keys()),
+            index=list(MODELS_CONFIG.keys()).index(DEFAULT_MODEL),
+        )
+        steps_per_sample = st.slider("Max Steps", 1, 20, 10)
+        temperature = st.slider(
+            "Temperature",
+            0.0,
+            2.0,
+            DEFAULT_TEMPERATURE,
+            0.1,
+            help="Controls randomness in AI responses. 0.0 = deterministic, higher = more creative",
+        )
 
     start_button = st.button("🚀 Start", type="primary")
 
@@ -93,7 +227,9 @@ if start_button:
     config = MODELS_CONFIG[model_choice]
     model_class = get_model_class(config["class"])
 
-    benchmark_helper = MapGuesserBenchmark(dataset_name=dataset_choice)
+    benchmark_helper = MapGuesserBenchmark(
+        dataset_name=dataset_choice if mode == "Dataset Mode" else "online"
+    )
     all_results = []
 
     progress_bar = st.progress(0)
@@ -106,10 +242,16 @@ if start_button:
     ) as bot:
         for i, sample in enumerate(test_samples):
             st.divider()
-            st.header(f"Sample {i + 1}/{num_samples} - ID: {sample.get('id', 'N/A')}")
+            st.header(f"Sample {i + 1}/{num_samples}")
 
-            # Load the sample location
-            bot.controller.load_location_from_data(sample)
+            if mode == "Online Mode":
+                # Load the MapCrunch URL directly
+                bot.controller.load_url(sample["url"])
+            else:
+                # Load from dataset as before
+                bot.controller.load_location_from_data(sample)
+
+            bot.controller.setup_clean_environment()
 
             # Create containers for UI updates
             sample_container = st.container()
@@ -289,4 +431,12 @@ if start_button:
             data=results_json,
             file_name=f"geo_results_{dataset_choice}_{model_choice}_{num_samples}samples.json",
             mime="application/json",
+        )
+
+
+def handle_tab_completion():
+    """Handle tab completion for the Google Maps URL input."""
+    if st.session_state.google_maps_url == "":
+        st.session_state.google_maps_url = (
+            "https://www.google.com/maps/@37.5851338,-122.1519467,9z?entry=ttu"
         )

@@ -6,13 +6,7 @@ from typing import Tuple, List, Optional, Dict, Any, Type
 
 from PIL import Image
 from langchain_core.messages import HumanMessage, BaseMessage
-from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
-from langchain_google_genai import ChatGoogleGenerativeAI
-
 from hf_chat import HuggingFaceChat
-
 from mapcrunch_controller import MapCrunchController
 
 # The "Golden" Prompt (v7): add more descprtions in context and task
@@ -43,20 +37,20 @@ AGENT_PROMPT_TEMPLATE = """
 
 4.  **Be Decisive:** A unique, definitive clue (full address, rare town name, etc.) ⇒ `GUESS` immediately.
 
-5.  **Final-Step Rule:** If **Remaining Steps = 1**, you **MUST** `GUESS`.
+5.  **Final-Step Rule:** If **Remaining Steps = 1**, you **MUST** `GUESS` and you should carefully check the image and the surroundings.
 
 ────────────────────────────────
+**Context & Task:**
+Analyze your full journey history and current view, apply the Core Principles, and decide your next action in the required JSON format.
+
 **Action History**
 {history_text}
 
 ────────────────────────────────
-**OUTPUT FORMAT**
-
-Return **one** JSON object wrapped in ```json … ```:
-
-**JSON Output Format:**
-Your response MUST be a valid JSON object wrapped in json ... .
-{{"reasoning": "...", "action_details": {{"action": "GUESS", "lat": <float>, "lon": <float>}} }}
+**JSON Output Format:**More actions
+Your response MUST be a valid JSON object wrapped in ```json ... ```.
+- For exploration: `{{"reasoning": "...", "action_details": {{"action": "ACTION_NAME"}} }}`
+- For the final guess: `{{"reasoning": "...", "action_details": {{"action": "GUESS", "lat": <float>, "lon": <float>}} }}`
 """
 
 BENCHMARK_PROMPT = """

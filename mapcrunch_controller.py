@@ -179,6 +179,22 @@ class MapCrunchController:
             base_actions.extend(["MOVE_FORWARD", "MOVE_BACKWARD"])
         return base_actions
 
+    def get_current_address(self) -> Optional[str]:
+        try:
+            address_element = self.wait.until(
+                EC.visibility_of_element_located(
+                    (By.CSS_SELECTOR, SELECTORS["address_element"])
+                )
+            )
+            address_text = address_element.text.strip()
+            address_title = address_element.get_attribute("title") or ""
+            return (
+                address_title
+                if len(address_title) > len(address_text)
+                else address_text
+            )
+        except Exception:
+            return "Stealth Mode"
     def pan_view(self, direction: str, degrees: int = 45):
         """Pans the view using a direct JS call."""
         pov = self.driver.execute_script("return window.panorama.getPov();")
@@ -275,3 +291,13 @@ class MapCrunchController:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
+
+    def load_url(self, url):
+        """Load a specific MapCrunch URL."""
+        try:
+            self.driver.get(url)
+            time.sleep(2)  # Wait for the page to load
+            return True
+        except Exception as e:
+            print(f"Error loading URL: {e}")
+            return False

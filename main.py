@@ -1,11 +1,5 @@
 import argparse
 import json
-import random
-from typing import Dict, Optional, List
-
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
-from langchain_google_genai import ChatGoogleGenerativeAI
 
 from geo_bot import GeoBot
 from benchmark import MapGuesserBenchmark
