@@ -6,13 +6,7 @@ from typing import Tuple, List, Optional, Dict, Any, Type
 
 from PIL import Image
 from langchain_core.messages import HumanMessage, BaseMessage
-from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
-from langchain_google_genai import ChatGoogleGenerativeAI
-
 from hf_chat import HuggingFaceChat
-
 from mapcrunch_controller import MapCrunchController
 
 # The "Golden" Prompt (v7): add more descprtions in context and task

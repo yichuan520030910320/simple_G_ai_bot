@@ -1,16 +1,10 @@
 import argparse
 import json
-import random
-from typing import Dict, Optional, List
-
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
-from langchain_google_genai import ChatGoogleGenerativeAI
 
 from geo_bot import GeoBot
 from benchmark import MapGuesserBenchmark
 from data_collector import DataCollector
-from config import MODELS_CONFIG, get_data_paths, SUCCESS_THRESHOLD_KM
+from config import MODELS_CONFIG, get_data_paths, SUCCESS_THRESHOLD_KM, get_model_class
 
 
 def agent_mode(
@@ -48,7 +42,7 @@ def agent_mode(
     print(f"Will run on {len(test_samples)} samples from dataset '{dataset_name}'.")
 
     config = MODELS_CONFIG.get(model_name)
-    model_class = globals()[config["class"]]
+    model_class = get_model_class(config["class"])
     model_instance_name = config["model_name"]
 
     benchmark_helper = MapGuesserBenchmark(dataset_name=dataset_name, headless=True)
