@@ -14,18 +14,10 @@ from config import (
     get_model_class,
     DEFAULT_MODEL,
     DEFAULT_TEMPERATURE,
+    setup_environment_variables,
 )
 
-
-# Simple API key setup
-if "OPENAI_API_KEY" in st.secrets:
-    os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
-if "ANTHROPIC_API_KEY" in st.secrets:
-    os.environ["ANTHROPIC_API_KEY"] = st.secrets["ANTHROPIC_API_KEY"]
-if "GOOGLE_API_KEY" in st.secrets:
-    os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
-if "HF_TOKEN" in st.secrets:
-    os.environ["HF_TOKEN"] = st.secrets["HF_TOKEN"]
+setup_environment_variables(st.secrets)
 
 
 def convert_google_to_mapcrunch_url(google_url):

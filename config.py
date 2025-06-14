@@ -94,6 +94,23 @@ MODELS_CONFIG = {
     },
 }
 
+POSSIBLE_API_KEYS = [
+    "OPENAI_API_KEY",
+    "ANTHROPIC_API_KEY",
+    "GOOGLE_API_KEY",
+    "HF_TOKEN",
+    "OPENROUTER_API_KEY",
+]
+
+
+def setup_environment_variables(st_secrets=None):
+    for key in POSSIBLE_API_KEYS:
+        # Try Streamlit secrets first if provided
+        if st_secrets and key in st_secrets:
+            os.environ[key] = st_secrets[key]
+        elif key in os.environ:
+            continue
+
 
 def get_model_class(class_name):
     """Get actual model class from string name"""
