@@ -3,6 +3,7 @@ import json
 import re
 from io import BytesIO
 from typing import Tuple, List, Optional, Dict, Any, Type
+import time
 
 from PIL import Image
 from langchain_core.messages import HumanMessage, BaseMessage
@@ -37,7 +38,10 @@ AGENT_PROMPT_TEMPLATE = """
 
 4.  **Be Decisive:** A unique, definitive clue (full address, rare town name, etc.) ⇒ `GUESS` immediately.
 
-5.  **Final-Step Rule:** If **Remaining Steps = 1**, you **MUST** `GUESS` and you should carefully check the image and the surroundings.
+5.  **Final-Step Rule**
+    - If **Remaining Steps = 1**, you **MUST** `GUESS` with coordinates.
+    - **NO EXCEPTIONS**: Even with limited clues, provide your best estimate.
+    - **ALWAYS provide lat/lon numbers** - educated guesses are mandatory.
 
 ────────────────────────────────
 **Context & Task:**
@@ -136,21 +140,33 @@ class GeoBot:
             )
         ]
 
-    def _parse_agent_response(self, response: BaseMessage) -> Optional[Dict[str, Any]]:
+    def _parse_agent_response(
+        self, response: BaseMessage, verbose: bool = False
+    ) -> Optional[Dict[str, Any]]:
         """
-        Robustly parses JSON from the LLM response, handling markdown code blocks.
+        Robustly parses JSON from the LLM response with detailed logging.
         """
         try:
             assert isinstance(response.content, str), "Response content is not a string"
             content = response.content.strip()
+            if verbose:
+                print(f"Raw AI response: {content[:200]}...")  # Show first 200 chars
+
             match = re.search(r"```json\s*(\{.*?\})\s*```", content, re.DOTALL)
             if match:
                 json_str = match.group(1)
+                print(f"Extracted JSON: {json_str}")
             else:
                 json_str = content
-            return json.loads(json_str)
+                print("No JSON code block found, trying to parse entire content")
+
+            parsed = json.loads(json_str)
+            print(f"Successfully parsed JSON: {parsed}")
+            return parsed
+
         except (json.JSONDecodeError, AttributeError) as e:
-            print(f"Invalid JSON from LLM: {e}\nFull response was:\n{response.content}")
+            print(f"✗ JSON parsing failed: {e}")
+            print(f"Full response was:\n{response.content}")
             return None
 
     def init_history(self) -> List[Dict[str, Any]]:
@@ -222,7 +238,8 @@ class GeoBot:
                 prompt, image_b64_for_prompt[-1:]
             )
             response = self.model.invoke(message)
-            decision = self._parse_agent_response(response)
+            verbose = remaining_steps == 1
+            decision = self._parse_agent_response(response, verbose)
         except Exception as e:
             print(f"Error during model invocation: {e}")
             decision = None
@@ -259,15 +276,7 @@ class GeoBot:
         self, max_steps: int = 10, step_callback=None
     ) -> Optional[Tuple[float, float]]:
         """
-        Enhanced agent loop that calls a callback function after each step for UI updates.
-
-        Args:
-            max_steps: Maximum number of steps to take
-            step_callback: Function called after each step with step info
-                        Signature: callback(step_info: dict) -> None
-
-        Returns:
-            Final guess coordinates (lat, lon) or None if no guess made
+        Agent loop with simple retry logic and clear error coordinates.
         """
         history = self.init_history()
 
@@ -275,14 +284,24 @@ class GeoBot:
             step_num = max_steps - step + 1
             print(f"\n--- Step {step_num}/{max_steps} ---")
 
-            # Setup and screenshot
-            self.controller.setup_clean_environment()
-            self.controller.label_arrows_on_screen()
+            # Simple retry for screenshot
+            screenshot_bytes = None
+            for retry in range(3):
+                try:
+                    self.controller.setup_clean_environment()
+                    self.controller.label_arrows_on_screen()
+                    screenshot_bytes = self.controller.take_street_view_screenshot()
+                    if screenshot_bytes:
+                        break
+                    print(f"Screenshot retry {retry + 1}/3")
+                except Exception as e:
+                    print(f"Error in step {step_num}, retry {retry + 1}: {e}")
+                    if retry < 2:
+                        time.sleep(2)
 
-            screenshot_bytes = self.controller.take_street_view_screenshot()
             if not screenshot_bytes:
-                print("Failed to take screenshot. Ending agent loop.")
-                return None
+                print("Failed to get screenshot after retries")
+                return -1.0, -1.0
 
             current_screenshot_b64 = self.pil_to_base64(
                 image=Image.open(BytesIO(screenshot_bytes))
@@ -290,36 +309,28 @@ class GeoBot:
             available_actions = self.controller.get_available_actions()
             print(f"Available actions: {available_actions}")
 
-            # Force guess on final step or get AI decision
-            if step == 1:  # Final step
-                # Force a guess with fallback logic
-                decision = {
-                    "reasoning": "Maximum steps reached, forcing final guess.",
-                    "action_details": {"action": "GUESS", "lat": 0.0, "lon": 0.0},
-                }
-                # Try to get a real guess from AI
-                try:
-                    ai_decision = self.execute_agent_step(
-                        history, step, current_screenshot_b64, available_actions
-                    )
-                    if (
-                        ai_decision
-                        and ai_decision.get("action_details", {}).get("action")
-                        == "GUESS"
-                    ):
-                        decision = ai_decision
-                except Exception as e:
-                    print(
-                        f"\nERROR: An exception occurred during the final GUESS attempt: {e}. Using fallback (0,0).\n"
-                    )
+            # Get AI decision
+            if step == 1:  # Final step - force guess
+                decision = self._get_final_guess(
+                    history, current_screenshot_b64, available_actions
+                )
             else:
-                # Normal step execution
                 decision = self.execute_agent_step(
                     history, step, current_screenshot_b64, available_actions
                 )
 
-            # Create step_info with current history BEFORE adding current step
-            # This shows the history up to (but not including) the current step
+            if not decision:
+                print("No decision from AI, using fallback")
+                decision = {
+                    "reasoning": "AI decision failed",
+                    "action_details": {
+                        "action": "GUESS" if step == 1 else "PAN_RIGHT",
+                        "lat": -1.0,
+                        "lon": -1.0,
+                    },
+                }
+
+            # UI callback
             step_info = {
                 "step_num": step_num,
                 "max_steps": max_steps,
@@ -330,7 +341,7 @@ class GeoBot:
                 "is_final_step": step == 1,
                 "reasoning": decision.get("reasoning", "N/A"),
                 "action_details": decision.get("action_details", {"action": "N/A"}),
-                "history": history.copy(),  # History up to current step (excluding current)
+                "history": history.copy(),
             }
 
             action_details = decision.get("action_details", {})
@@ -338,29 +349,78 @@ class GeoBot:
             print(f"AI Reasoning: {decision.get('reasoning', 'N/A')}")
             print(f"AI Action: {action}")
 
-            # Call UI callback before executing action
             if step_callback:
                 try:
                     step_callback(step_info)
                 except Exception as e:
-                    print(f"Warning: UI callback failed: {e}")
+                    print(f"UI callback error: {e}")
 
-            # Add step to history AFTER callback (so next iteration has this step in history)
+            # Add to history
             self.add_step_to_history(history, current_screenshot_b64, decision)
 
             # Execute action
             if action == "GUESS":
-                lat, lon = action_details.get("lat"), action_details.get("lon")
-                if lat is not None and lon is not None:
-                    return lat, lon
-                else:
-                    print("Invalid guess coordinates, using fallback")
-                    return 0.0, 0.0  # Fallback coordinates
+                lat = action_details.get("lat", -1.0)
+                lon = action_details.get("lon", -1.0)
+                print(f"Final guess: lat={lat}, lon={lon}")
+
+                # Validate coordinates
+                try:
+                    lat_f, lon_f = float(lat), float(lon)
+                    if -90 <= lat_f <= 90 and -180 <= lon_f <= 180:
+                        return lat_f, lon_f
+                except (ValueError, TypeError):
+                    pass
+
+                print("Invalid coordinates, returning error values")
+                return -1.0, -1.0
             else:
                 self.execute_action(action)
 
-        print("Max steps reached. Agent did not make a final guess.")
-        return None
+        print("Max steps reached without guess")
+        return -1.0, -1.0
+
+    def _get_final_guess(self, history, screenshot_b64, available_actions):
+        """Get final guess from AI with simple retry."""
+        for retry in range(2):
+            try:
+                # If retry > 0, use a force prompt to ensure the AI returns a GUESS with coordinates.
+                if retry > 0:
+                    history_text = self.generate_history_text(history)
+                    force_prompt = f"""**FINAL STEP - MANDATORY GUESS**
+You MUST return GUESS with coordinates. No other action allowed.
+Remaining Steps: 1
+Journey history: {history_text}
+Provide your best lat/lon estimate based on all observed clues.
+**MANDATORY JSON Format:**
+{{"reasoning": "your analysis", "action_details": {{"action": "GUESS", "lat": 45.0, "lon": 2.0}} }}"""
+
+                    message = self._create_message_with_history(
+                        force_prompt, [screenshot_b64]
+                    )
+                    response = self.model.invoke(message)
+                    decision = self._parse_agent_response(response)
+                else:
+                    decision = self.execute_agent_step(
+                        history, 1, screenshot_b64, available_actions
+                    )
+                if (
+                    decision
+                    and decision.get("action_details", {}).get("action") == "GUESS"
+                ):
+                    return decision
+                print(f"AI didn't return GUESS, retry {retry + 1}/2")
+            except Exception as e:
+                print(f"AI call failed, retry {retry + 1}/2: {e}")
+
+            if retry == 0:
+                time.sleep(1)
+
+        # Fallback
+        return {
+            "reasoning": "AI failed to provide final guess after retries",
+            "action_details": {"action": "GUESS", "lat": -1.0, "lon": -1.0},
+        }
 
     def analyze_image(self, image: Image.Image) -> Optional[Tuple[float, float]]:
         image_b64 = self.pil_to_base64(image)
