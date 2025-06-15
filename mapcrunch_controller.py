@@ -49,8 +49,16 @@ class MapCrunchController:
             },
         )
 
-        self.driver.get(MAPCRUNCH_URL)
-        time.sleep(3)
+        for retry in range(3):
+            try:
+                self.driver.get(MAPCRUNCH_URL)
+                time.sleep(3)
+                break
+            except Exception as e:
+                if retry == 2:
+                    raise e
+                print(f"Failed to load MapCrunch, retry {retry + 1}/3")
+                time.sleep(2)
 
     def setup_clean_environment(self):
         """
@@ -195,6 +203,7 @@ class MapCrunchController:
             )
         except Exception:
             return "Stealth Mode"
+
     def pan_view(self, direction: str, degrees: int = 45):
         """Pans the view using a direct JS call."""
         pov = self.driver.execute_script("return window.panorama.getPov();")
