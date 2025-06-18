@@ -37,7 +37,7 @@ pinned: false
 ### 🗃️ **Dataset Curation**
 Generate and curate high-quality image datasets with intelligent filtering and categorization.
 
-### 🔍 **Single Image Analysis** 
+### 🔍 **Image Analysis with multiple angle** 
 Benchmark different AI models on individual images with detailed performance metrics.
 
 </td>
