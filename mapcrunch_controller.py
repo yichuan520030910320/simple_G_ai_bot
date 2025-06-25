@@ -11,53 +11,80 @@ from config import MAPCRUNCH_URL, SELECTORS, DATA_COLLECTION_CONFIG
 
 class MapCrunchController:
     def __init__(self, headless: bool = False):
-        options = uc.ChromeOptions()
-        options.add_argument(
-            "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
-        )
-        options.add_argument("--window-size=1920,1080")
-        options.set_capability("goog:loggingPrefs", {"browser": "ALL"})
+        # Try to initialize ChromeDriver with version 137 (your current Chrome version)
+        try:
+            # Create fresh ChromeOptions for first attempt
+            options = uc.ChromeOptions()
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-gpu")
+            options.add_argument("--window-size=1920,1080")
+            options.add_argument("--disable-web-security")
+            options.add_argument("--disable-features=VizDisplayCompositor")
+            options.add_argument("--disable-blink-features=AutomationControlled")
+            
+            if headless:
+                options.add_argument("--headless=new")
 
-        if headless:
-            options.add_argument("--headless=new")
+            self.driver = uc.Chrome(options=options, use_subprocess=True, version_main=137)
+            print("✅ ChromeDriver initialized successfully with version 137")
+        except Exception as e:
+            print(f"Failed with version 137: {e}")
+            try:
+                # Create fresh ChromeOptions for fallback attempt
+                options = uc.ChromeOptions()
+                options.add_argument("--no-sandbox")
+                options.add_argument("--disable-dev-shm-usage")
+                options.add_argument("--disable-gpu")
+                options.add_argument("--window-size=1920,1080")
+                options.add_argument("--disable-web-security")
+                options.add_argument("--disable-features=VizDisplayCompositor")
+                options.add_argument("--disable-blink-features=AutomationControlled")
+                
+                if headless:
+                    options.add_argument("--headless=new")
 
-        self.driver = uc.Chrome(options=options, use_subprocess=True)
+                # Fallback to auto-detection
+                self.driver = uc.Chrome(options=options, use_subprocess=True)
+                print("✅ ChromeDriver initialized successfully with auto-detection")
+            except Exception as e2:
+                print(f"Failed with auto-detection: {e2}")
+                raise Exception(f"Could not initialize ChromeDriver. Please update Chrome or check compatibility. Errors: {e}, {e2}")
+        
         self.wait = WebDriverWait(self.driver, 10)
+        
+        # Inject browser detection bypass script
+        try:
+            self.driver.execute_cdp_cmd(
+                "Page.addScriptToEvaluateOnNewDocument",
+                {
+                    "source": """
+                    Object.defineProperty(window, 'badBrowser', {
+                      value: 0,
+                      writable: false,
+                      configurable: false
+                    });
+                    window.alert = function() {};
+                    Object.defineProperty(navigator, 'webdriver', {
+                      get: () => undefined
+                    });
+                """
+                },
+            )
+        except Exception as e:
+            print(f"Warning: Could not inject browser detection script: {e}")
 
-        # Here we are injecting a script to the page to disable the browser detection.
-        # Basically, we are setting the badBrowser property to 0, which is a property that is used to detect if the browser is being controlled by a script.
-        # In the main.min.js, we can see some js code like this:
-        # if (badBrowser) {
-        #     alert("Unsupported browser!");
-        # } else {
-        #     window.panorama = { ... }
-        # }
-        self.driver.execute_cdp_cmd(
-            "Page.addScriptToEvaluateOnNewDocument",
-            {
-                "source": """
-                Object.defineProperty(window, 'badBrowser', {
-                  value: 0,
-                  writable: false,
-                  configurable: false
-                });
-                window.alert = function() {};
-                Object.defineProperty(navigator, 'webdriver', {
-                  get: () => undefined
-                });
-            """
-            },
-        )
-
+        # Load MapCrunch
         for retry in range(3):
             try:
                 self.driver.get(MAPCRUNCH_URL)
                 time.sleep(3)
+                print("✅ MapCrunch loaded successfully")
                 break
             except Exception as e:
                 if retry == 2:
                     raise e
-                print(f"Failed to load MapCrunch, retry {retry + 1}/3")
+                print(f"Failed to load MapCrunch, retry {retry + 1}/3: {e}")
                 time.sleep(2)
 
     def setup_clean_environment(self):
